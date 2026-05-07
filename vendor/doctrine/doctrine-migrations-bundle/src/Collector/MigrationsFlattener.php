@@ -13,8 +13,8 @@ use ReflectionClass;
 
 use function array_map;
 
-/** @internal */
-final class MigrationsFlattener
+/** @final */
+class MigrationsFlattener
 {
     /**
      * @return array{
@@ -29,15 +29,17 @@ final class MigrationsFlattener
      */
     public function flattenAvailableMigrations(AvailableMigrationsList $migrationsList): array
     {
-        return array_map(static fn (AvailableMigration $migration) => [
-            'version' => (string) $migration->getVersion(),
-            'is_new' => true,
-            'is_unavailable' => false,
-            'description' => $migration->getMigration()->getDescription(),
-            'executed_at' =>  null,
-            'execution_time' =>  null,
-            'file' => (new ReflectionClass($migration->getMigration()))->getFileName(),
-        ], $migrationsList->getItems());
+        return array_map(static function (AvailableMigration $migration) {
+            return [
+                'version' => (string) $migration->getVersion(),
+                'is_new' => true,
+                'is_unavailable' => false,
+                'description' => $migration->getMigration()->getDescription(),
+                'executed_at' =>  null,
+                'execution_time' =>  null,
+                'file' => (new ReflectionClass($migration->getMigration()))->getFileName(),
+            ];
+        }, $migrationsList->getItems());
     }
 
     /**
@@ -62,7 +64,7 @@ final class MigrationsFlattener
                 'version' => (string) $migration->getVersion(),
                 'is_new' => false,
                 'is_unavailable' => $availableMigration === null,
-                'description' => $availableMigration?->getDescription(),
+                'description' => $availableMigration !== null ? $availableMigration->getDescription() : null,
                 'executed_at' => $migration->getExecutedAt(),
                 'execution_time' => $migration->getExecutionTime(),
                 'file' => $availableMigration !== null ? (new ReflectionClass($availableMigration))->getFileName() : null,

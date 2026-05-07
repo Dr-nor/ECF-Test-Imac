@@ -16,6 +16,7 @@ class ReplicaConfig
     private $port;
     private $user;
     private $password;
+    private $overrideUrl;
     private $dbnameSuffix;
     private $applicationName;
     private $charset;
@@ -36,6 +37,7 @@ class ReplicaConfig
     private $sslcrl;
     private $pooled;
     private $multipleActiveResultSets;
+    private $useSavepoints;
     private $instancename;
     private $connectstring;
     private $_usedProperties = [];
@@ -119,6 +121,20 @@ class ReplicaConfig
     {
         $this->_usedProperties['password'] = true;
         $this->password = $value;
+
+        return $this;
+    }
+
+    /**
+     * @default null
+     * @param ParamConfigurator|bool $value
+     * @deprecated Since doctrine/doctrine-bundle 2.4: The "doctrine.dbal.override_url" configuration key is deprecated.
+     * @return $this
+     */
+    public function overrideUrl($value): static
+    {
+        $this->_usedProperties['overrideUrl'] = true;
+        $this->overrideUrl = $value;
 
         return $this;
     }
@@ -400,6 +416,20 @@ class ReplicaConfig
     }
 
     /**
+     * Use savepoints for nested transactions
+     * @default null
+     * @param ParamConfigurator|bool $value
+     * @return $this
+     */
+    public function useSavepoints($value): static
+    {
+        $this->_usedProperties['useSavepoints'] = true;
+        $this->useSavepoints = $value;
+
+        return $this;
+    }
+
+    /**
      * Optional parameter, complete whether to add the INSTANCE_NAME parameter in the connection. It is generally used to connect to an Oracle RAC server to select the name of a particular instance.
      * @default null
      * @param ParamConfigurator|mixed $value
@@ -463,6 +493,12 @@ class ReplicaConfig
             $this->_usedProperties['password'] = true;
             $this->password = $config['password'];
             unset($config['password']);
+        }
+
+        if (array_key_exists('override_url', $config)) {
+            $this->_usedProperties['overrideUrl'] = true;
+            $this->overrideUrl = $config['override_url'];
+            unset($config['override_url']);
         }
 
         if (array_key_exists('dbname_suffix', $config)) {
@@ -585,6 +621,12 @@ class ReplicaConfig
             unset($config['MultipleActiveResultSets']);
         }
 
+        if (array_key_exists('use_savepoints', $config)) {
+            $this->_usedProperties['useSavepoints'] = true;
+            $this->useSavepoints = $config['use_savepoints'];
+            unset($config['use_savepoints']);
+        }
+
         if (array_key_exists('instancename', $config)) {
             $this->_usedProperties['instancename'] = true;
             $this->instancename = $config['instancename'];
@@ -622,6 +664,9 @@ class ReplicaConfig
         }
         if (isset($this->_usedProperties['password'])) {
             $output['password'] = $this->password;
+        }
+        if (isset($this->_usedProperties['overrideUrl'])) {
+            $output['override_url'] = $this->overrideUrl;
         }
         if (isset($this->_usedProperties['dbnameSuffix'])) {
             $output['dbname_suffix'] = $this->dbnameSuffix;
@@ -682,6 +727,9 @@ class ReplicaConfig
         }
         if (isset($this->_usedProperties['multipleActiveResultSets'])) {
             $output['MultipleActiveResultSets'] = $this->multipleActiveResultSets;
+        }
+        if (isset($this->_usedProperties['useSavepoints'])) {
+            $output['use_savepoints'] = $this->useSavepoints;
         }
         if (isset($this->_usedProperties['instancename'])) {
             $output['instancename'] = $this->instancename;

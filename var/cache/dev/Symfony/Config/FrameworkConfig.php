@@ -373,7 +373,7 @@ class FrameworkConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
      * @template TValue of array|bool
      * @param TValue $value
      * Form configuration
-     * @default {"enabled":false,"csrf_protection":{"enabled":null,"token_id":null,"field_name":"_token","field_attr":{"data-controller":"csrf-protection"}}}
+     * @default {"enabled":true,"csrf_protection":{"enabled":null,"token_id":null,"field_name":"_token","field_attr":{"data-controller":"csrf-protection"}}}
      * @return \Symfony\Config\Framework\FormConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\FormConfig : static)
      * @deprecated since Symfony 7.4
@@ -662,7 +662,7 @@ class FrameworkConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
      * @template TValue of array|bool
      * @param TValue $value
      * Assets configuration
-     * @default {"enabled":false,"strict_mode":false,"version_strategy":null,"version":null,"version_format":"%%s?%%s","json_manifest_path":null,"base_path":"","base_urls":[],"packages":[]}
+     * @default {"enabled":true,"strict_mode":false,"version_strategy":null,"version":null,"version_format":"%%s?%%s","json_manifest_path":null,"base_path":"","base_urls":[],"packages":[]}
      * @return \Symfony\Config\Framework\AssetsConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\AssetsConfig : static)
      * @deprecated since Symfony 7.4
@@ -749,7 +749,7 @@ class FrameworkConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
      * @template TValue of array|bool
      * @param TValue $value
      * Validation configuration
-     * @default {"enabled":false,"enable_attributes":true,"static_method":["loadValidatorMetadata"],"translation_domain":"validators","email_validation_mode":"html5","mapping":{"paths":[]},"not_compromised_password":{"enabled":true,"endpoint":null},"disable_translation":false,"auto_mapping":[]}
+     * @default {"enabled":true,"enable_attributes":true,"static_method":["loadValidatorMetadata"],"translation_domain":"validators","email_validation_mode":"html5","mapping":{"paths":[]},"not_compromised_password":{"enabled":true,"endpoint":null},"disable_translation":false,"auto_mapping":[]}
      * @return \Symfony\Config\Framework\ValidationConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\ValidationConfig : static)
      * @deprecated since Symfony 7.4
@@ -835,7 +835,7 @@ class FrameworkConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
      * @template TValue of array|bool
      * @param TValue $value
      * Property access configuration
-     * @default {"enabled":false,"magic_call":false,"magic_get":true,"magic_set":true,"throw_exception_on_invalid_index":false,"throw_exception_on_invalid_property_path":true}
+     * @default {"enabled":true,"magic_call":false,"magic_get":true,"magic_set":true,"throw_exception_on_invalid_index":false,"throw_exception_on_invalid_property_path":true}
      * @return \Symfony\Config\Framework\PropertyAccessConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\PropertyAccessConfig : static)
      * @deprecated since Symfony 7.4
@@ -864,7 +864,7 @@ class FrameworkConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
      * @template TValue of array|bool
      * @param TValue $value
      * Type info configuration
-     * @default {"enabled":false,"aliases":[]}
+     * @default {"enabled":true,"aliases":[]}
      * @return \Symfony\Config\Framework\TypeInfoConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\TypeInfoConfig : static)
      * @deprecated since Symfony 7.4
@@ -893,7 +893,7 @@ class FrameworkConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
      * @template TValue of array|bool
      * @param TValue $value
      * Property info configuration
-     * @default {"enabled":false}
+     * @default {"enabled":true}
      * @return \Symfony\Config\Framework\PropertyInfoConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\PropertyInfoConfig : static)
      * @deprecated since Symfony 7.4
@@ -1165,7 +1165,7 @@ class FrameworkConfig implements \Symfony\Component\Config\Builder\ConfigBuilder
      * @template TValue of array|bool
      * @param TValue $value
      * Mailer configuration
-     * @default {"enabled":false,"message_bus":null,"dsn":null,"transports":[],"headers":[],"dkim_signer":{"enabled":false,"key":"","domain":"","select":"","passphrase":"","options":[]},"smime_signer":{"enabled":false,"key":"","certificate":"","passphrase":null,"extra_certificates":null,"sign_options":null},"smime_encrypter":{"enabled":false,"repository":"","cipher":null}}
+     * @default {"enabled":true,"message_bus":null,"dsn":null,"transports":[],"headers":[],"dkim_signer":{"enabled":false,"key":"","domain":"","select":"","passphrase":"","options":[]},"smime_signer":{"enabled":false,"key":"","certificate":"","passphrase":null,"extra_certificates":null,"sign_options":null},"smime_encrypter":{"enabled":false,"repository":"","cipher":null}}
      * @return \Symfony\Config\Framework\MailerConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Framework\MailerConfig : static)
      * @deprecated since Symfony 7.4

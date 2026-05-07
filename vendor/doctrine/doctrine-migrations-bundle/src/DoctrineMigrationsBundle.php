@@ -11,7 +11,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 use function dirname;
 
-final class DoctrineMigrationsBundle extends Bundle
+/** @final */
+class DoctrineMigrationsBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {

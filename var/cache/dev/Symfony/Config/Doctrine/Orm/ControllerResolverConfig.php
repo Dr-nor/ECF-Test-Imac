@@ -29,10 +29,9 @@ class ControllerResolverConfig
     }
 
     /**
-     * Set to true to enable using route placeholders as lookup criteria when the primary key doesn't match the argument name
-     * @default false
+     * Set to false to disable using route placeholders as lookup criteria when the primary key doesn't match the argument name
+     * @default null
      * @param ParamConfigurator|bool $value
-     * @deprecated Since doctrine/doctrine-bundle 3.1: The "doctrine.orm.controller_resolver.auto_mapping" option is deprecated and will be removed in DoctrineBundle 4.0, as it only accepts `false` since 3.0.
      * @return $this
      */
     public function autoMapping($value): static

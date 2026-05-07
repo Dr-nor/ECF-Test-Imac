@@ -34,6 +34,7 @@ class EntityManagerConfig
     private $fetchModeSubselectBatchSize;
     private $repositoryFactory;
     private $schemaIgnoreClasses;
+    private $reportFieldsWhereDeclared;
     private $validateXmlMapping;
     private $secondLevelCache;
     private $hydrators;
@@ -289,7 +290,21 @@ class EntityManagerConfig
     }
 
     /**
-     * Set to "true" to opt-in to the new mapping driver mode that was added in Doctrine ORM 2.14 and will be mandatory in ORM 3.0. See https://github.com/doctrine/orm/pull/6728.
+     * Set to "true" to opt-in to the new mapping driver mode that was added in Doctrine ORM 2.16 and will be mandatory in ORM 3.0. See https://github.com/doctrine/orm/pull/10455.
+     * @default true
+     * @param ParamConfigurator|bool $value
+     * @return $this
+     */
+    public function reportFieldsWhereDeclared($value): static
+    {
+        $this->_usedProperties['reportFieldsWhereDeclared'] = true;
+        $this->reportFieldsWhereDeclared = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set to "true" to opt-in to the new mapping driver mode that was added in Doctrine ORM 2.14. See https://github.com/doctrine/orm/pull/6728.
      * @default false
      * @param ParamConfigurator|bool $value
      * @return $this
@@ -491,6 +506,12 @@ class EntityManagerConfig
             unset($config['schema_ignore_classes']);
         }
 
+        if (array_key_exists('report_fields_where_declared', $config)) {
+            $this->_usedProperties['reportFieldsWhereDeclared'] = true;
+            $this->reportFieldsWhereDeclared = $config['report_fields_where_declared'];
+            unset($config['report_fields_where_declared']);
+        }
+
         if (array_key_exists('validate_xml_mapping', $config)) {
             $this->_usedProperties['validateXmlMapping'] = true;
             $this->validateXmlMapping = $config['validate_xml_mapping'];
@@ -585,6 +606,9 @@ class EntityManagerConfig
         }
         if (isset($this->_usedProperties['schemaIgnoreClasses'])) {
             $output['schema_ignore_classes'] = $this->schemaIgnoreClasses;
+        }
+        if (isset($this->_usedProperties['reportFieldsWhereDeclared'])) {
+            $output['report_fields_where_declared'] = $this->reportFieldsWhereDeclared;
         }
         if (isset($this->_usedProperties['validateXmlMapping'])) {
             $output['validate_xml_mapping'] = $this->validateXmlMapping;

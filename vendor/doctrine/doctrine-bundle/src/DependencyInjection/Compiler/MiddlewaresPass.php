@@ -18,7 +18,6 @@ use function is_subclass_of;
 use function sprintf;
 use function usort;
 
-/** @internal */
 final class MiddlewaresPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void

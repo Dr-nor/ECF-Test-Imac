@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Doctrine\Bundle\DoctrineBundle\Twig;
 
+use Doctrine\Deprecations\Deprecation;
 use Doctrine\SqlFormatter\HtmlHighlighter;
 use Doctrine\SqlFormatter\NullHighlighter;
 use Doctrine\SqlFormatter\SqlFormatter;
 use Stringable;
 use Symfony\Component\VarDumper\Cloner\Data;
+use Twig\DeprecatedCallableInfo;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -16,9 +18,10 @@ use function addslashes;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
+use function array_merge;
 use function array_values;
-use function assert;
 use function bin2hex;
+use function class_exists;
 use function count;
 use function implode;
 use function is_array;
@@ -26,13 +29,14 @@ use function is_bool;
 use function is_string;
 use function preg_match;
 use function preg_replace_callback;
+use function sprintf;
 use function strtoupper;
 use function substr;
 
 /**
  * This class contains the needed functions in order to do the query highlighting
  *
- * @internal
+ * @internal since 2.11
  */
 class DoctrineExtension extends AbstractExtension
 {
@@ -43,13 +47,22 @@ class DoctrineExtension extends AbstractExtension
      *
      * @return TwigFilter[]
      */
-    public function getFilters(): array
+    public function getFilters()
     {
-        return [
+        $out     = [
             new TwigFilter('doctrine_prettify_sql', [$this, 'prettifySql'], ['is_safe' => ['html']]),
             new TwigFilter('doctrine_format_sql', [$this, 'formatSql'], ['is_safe' => ['html']]),
             new TwigFilter('doctrine_replace_query_parameters', [$this, 'replaceQueryParameters']),
         ];
+        $options = ['deprecated' => true];
+        // exists since twig/twig 3.15
+        if (class_exists(DeprecatedCallableInfo::class)) {
+            $options = ['deprecation_info' => new DeprecatedCallableInfo('doctrine/doctrine-bundle', '2.1')];
+        }
+
+        return array_merge($out, [
+            new TwigFilter('doctrine_pretty_query', [$this, 'formatQuery'], ['is_safe' => ['html']] + $options),
+        ]);
     }
 
     /**
@@ -57,8 +70,10 @@ class DoctrineExtension extends AbstractExtension
      * DON'T USE THIS FUNCTION OUTSIDE ITS INTENDED SCOPE
      *
      * @internal
+     *
+     * @return string
      */
-    public static function escapeFunction(mixed $parameter): string|int|float
+    public static function escapeFunction(mixed $parameter)
     {
         $result = $parameter;
 
@@ -99,17 +114,18 @@ class DoctrineExtension extends AbstractExtension
     /**
      * Return a query with the parameters replaced
      *
+     * @param string                       $query
      * @param array<array-key, mixed>|Data $parameters
+     *
+     * @return string
      */
-    public function replaceQueryParameters(string $query, array|Data $parameters): string
+    public function replaceQueryParameters($query, $parameters)
     {
         if ($parameters instanceof Data) {
             $parameters = $parameters->getValue(true);
-            assert(is_array($parameters));
         }
 
         $keys = array_keys($parameters);
-
         if (count(array_filter($keys, 'is_int')) === count($keys)) {
             $parameters = array_values($parameters);
         }
@@ -118,7 +134,7 @@ class DoctrineExtension extends AbstractExtension
 
         return preg_replace_callback(
             '/(?<!\?)\?(?!\?)|(?<!:)(:[a-z0-9_]+)/i',
-            static function (array $matches) use ($parameters, &$i): string {
+            static function ($matches) use ($parameters, &$i) {
                 $key = substr($matches[0], 1);
 
                 if (! array_key_exists($i, $parameters) && ! array_key_exists($key, $parameters)) {
@@ -126,12 +142,40 @@ class DoctrineExtension extends AbstractExtension
                 }
 
                 $value = array_key_exists($i, $parameters) ? $parameters[$i] : $parameters[$key];
-
                 $i++;
 
-                return (string) DoctrineExtension::escapeFunction($value);
+                return DoctrineExtension::escapeFunction($value);
             },
             $query,
+        );
+    }
+
+    /**
+     * Formats and/or highlights the given SQL statement.
+     *
+     * @param  string $sql
+     * @param  bool   $highlightOnly If true the query is not formatted, just highlighted
+     *
+     * @return string
+     */
+    public function formatQuery($sql, $highlightOnly = false)
+    {
+        Deprecation::trigger(
+            'doctrine/doctrine-bundle',
+            'https://github.com/doctrine/DoctrineBundle/pull/1056',
+            'The "%s()" method is deprecated and will be removed in doctrine-bundle 3.0.',
+            __METHOD__,
+        );
+
+        $this->setUpSqlFormatter(true, true);
+
+        if ($highlightOnly) {
+            return $this->sqlFormatter->highlight($sql);
+        }
+
+        return sprintf(
+            '<div class="highlight highlight-sql"><pre>%s</pre></div>',
+            $this->sqlFormatter->format($sql),
         );
     }
 
@@ -149,7 +193,7 @@ class DoctrineExtension extends AbstractExtension
         return $this->sqlFormatter->format($sql);
     }
 
-    private function setUpSqlFormatter(bool $highlight = true): void
+    private function setUpSqlFormatter(bool $highlight = true, bool $legacy = false): void
     {
         $this->sqlFormatter = new SqlFormatter($highlight ? new HtmlHighlighter([
             HtmlHighlighter::HIGHLIGHT_PRE            => 'class="highlight highlight-sql"',
@@ -162,6 +206,6 @@ class DoctrineExtension extends AbstractExtension
             HtmlHighlighter::HIGHLIGHT_ERROR          => 'class="error"',
             HtmlHighlighter::HIGHLIGHT_COMMENT        => 'class="comment"',
             HtmlHighlighter::HIGHLIGHT_VARIABLE       => 'class="variable"',
-        ]) : new NullHighlighter());
+        ], ! $legacy) : new NullHighlighter());
     }
 }

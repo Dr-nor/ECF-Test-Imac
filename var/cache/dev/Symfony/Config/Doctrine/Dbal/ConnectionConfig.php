@@ -2,6 +2,7 @@
 
 namespace Symfony\Config\Doctrine\Dbal;
 
+require_once __DIR__.\DIRECTORY_SEPARATOR.'ConnectionConfig'.\DIRECTORY_SEPARATOR.'SlaveConfig.php';
 require_once __DIR__.\DIRECTORY_SEPARATOR.'ConnectionConfig'.\DIRECTORY_SEPARATOR.'ReplicaConfig.php';
 
 use Symfony\Component\Config\Loader\ParamConfigurator;
@@ -18,6 +19,7 @@ class ConnectionConfig
     private $port;
     private $user;
     private $password;
+    private $overrideUrl;
     private $dbnameSuffix;
     private $applicationName;
     private $charset;
@@ -38,25 +40,30 @@ class ConnectionConfig
     private $sslcrl;
     private $pooled;
     private $multipleActiveResultSets;
+    private $useSavepoints;
     private $instancename;
     private $connectstring;
     private $driver;
+    private $platformService;
     private $autoCommit;
     private $schemaFilter;
     private $logging;
     private $profiling;
     private $profilingCollectBacktrace;
     private $profilingCollectSchemaErrors;
+    private $disableTypeComments;
     private $serverVersion;
     private $idleConnectionTtl;
     private $driverClass;
     private $wrapperClass;
+    private $keepSlave;
     private $keepReplica;
     private $options;
     private $mappingTypes;
     private $defaultTableOptions;
     private $schemaManagerFactory;
     private $resultCache;
+    private $slaves;
     private $replicas;
     private $_usedProperties = [];
 
@@ -139,6 +146,20 @@ class ConnectionConfig
     {
         $this->_usedProperties['password'] = true;
         $this->password = $value;
+
+        return $this;
+    }
+
+    /**
+     * @default null
+     * @param ParamConfigurator|bool $value
+     * @deprecated Since doctrine/doctrine-bundle 2.4: The "doctrine.dbal.override_url" configuration key is deprecated.
+     * @return $this
+     */
+    public function overrideUrl($value): static
+    {
+        $this->_usedProperties['overrideUrl'] = true;
+        $this->overrideUrl = $value;
 
         return $this;
     }
@@ -420,6 +441,20 @@ class ConnectionConfig
     }
 
     /**
+     * Use savepoints for nested transactions
+     * @default null
+     * @param ParamConfigurator|bool $value
+     * @return $this
+     */
+    public function useSavepoints($value): static
+    {
+        $this->_usedProperties['useSavepoints'] = true;
+        $this->useSavepoints = $value;
+
+        return $this;
+    }
+
+    /**
      * Optional parameter, complete whether to add the INSTANCE_NAME parameter in the connection. It is generally used to connect to an Oracle RAC server to select the name of a particular instance.
      * @default null
      * @param ParamConfigurator|mixed $value
@@ -456,6 +491,20 @@ class ConnectionConfig
     {
         $this->_usedProperties['driver'] = true;
         $this->driver = $value;
+
+        return $this;
+    }
+
+    /**
+     * @default null
+     * @param ParamConfigurator|mixed $value
+     * @deprecated Since doctrine/doctrine-bundle 2.9: The "platform_service" configuration key is deprecated since doctrine-bundle 2.9. DBAL 4 will not support setting a custom platform via connection params anymore.
+     * @return $this
+     */
+    public function platformService($value): static
+    {
+        $this->_usedProperties['platformService'] = true;
+        $this->platformService = $value;
 
         return $this;
     }
@@ -542,6 +591,19 @@ class ConnectionConfig
 
     /**
      * @default null
+     * @param ParamConfigurator|bool $value
+     * @return $this
+     */
+    public function disableTypeComments($value): static
+    {
+        $this->_usedProperties['disableTypeComments'] = true;
+        $this->disableTypeComments = $value;
+
+        return $this;
+    }
+
+    /**
+     * @default null
      * @param ParamConfigurator|mixed $value
      * @return $this
      */
@@ -588,6 +650,20 @@ class ConnectionConfig
     {
         $this->_usedProperties['wrapperClass'] = true;
         $this->wrapperClass = $value;
+
+        return $this;
+    }
+
+    /**
+     * @default null
+     * @param ParamConfigurator|bool $value
+     * @deprecated Since doctrine/doctrine-bundle 2.2: The "keep_slave" configuration key is deprecated since doctrine-bundle 2.2. Use the "keep_replica" configuration key instead.
+     * @return $this
+     */
+    public function keepSlave($value): static
+    {
+        $this->_usedProperties['keepSlave'] = true;
+        $this->keepSlave = $value;
 
         return $this;
     }
@@ -667,6 +743,32 @@ class ConnectionConfig
     /**
      * @template TValue of mixed
      * @param TValue $value
+     * @deprecated Since doctrine/doctrine-bundle 2.2: The "slaves" configuration key will be renamed to "replicas" in doctrine-bundle 3.0. "slaves" is deprecated since doctrine-bundle 2.2.
+     * @return \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig|$this
+     * @psalm-return (TValue is array ? \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig : static)
+     */
+    public function slave(string $name, mixed $value = []): \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig|static
+    {
+        if (!\is_array($value)) {
+            $this->_usedProperties['slaves'] = true;
+            $this->slaves[$name] = $value;
+
+            return $this;
+        }
+
+        if (!isset($this->slaves[$name]) || !$this->slaves[$name] instanceof \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig) {
+            $this->_usedProperties['slaves'] = true;
+            $this->slaves[$name] = new \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig($value);
+        } elseif (1 < \func_num_args()) {
+            throw new InvalidConfigurationException('The node created by "slave()" has already been initialized. You cannot pass values the second time you call slave().');
+        }
+
+        return $this->slaves[$name];
+    }
+
+    /**
+     * @template TValue of mixed
+     * @param TValue $value
      * @return \Symfony\Config\Doctrine\Dbal\ConnectionConfig\ReplicaConfig|$this
      * @psalm-return (TValue is array ? \Symfony\Config\Doctrine\Dbal\ConnectionConfig\ReplicaConfig : static)
      */
@@ -725,6 +827,12 @@ class ConnectionConfig
             $this->_usedProperties['password'] = true;
             $this->password = $config['password'];
             unset($config['password']);
+        }
+
+        if (array_key_exists('override_url', $config)) {
+            $this->_usedProperties['overrideUrl'] = true;
+            $this->overrideUrl = $config['override_url'];
+            unset($config['override_url']);
         }
 
         if (array_key_exists('dbname_suffix', $config)) {
@@ -847,6 +955,12 @@ class ConnectionConfig
             unset($config['MultipleActiveResultSets']);
         }
 
+        if (array_key_exists('use_savepoints', $config)) {
+            $this->_usedProperties['useSavepoints'] = true;
+            $this->useSavepoints = $config['use_savepoints'];
+            unset($config['use_savepoints']);
+        }
+
         if (array_key_exists('instancename', $config)) {
             $this->_usedProperties['instancename'] = true;
             $this->instancename = $config['instancename'];
@@ -863,6 +977,12 @@ class ConnectionConfig
             $this->_usedProperties['driver'] = true;
             $this->driver = $config['driver'];
             unset($config['driver']);
+        }
+
+        if (array_key_exists('platform_service', $config)) {
+            $this->_usedProperties['platformService'] = true;
+            $this->platformService = $config['platform_service'];
+            unset($config['platform_service']);
         }
 
         if (array_key_exists('auto_commit', $config)) {
@@ -901,6 +1021,12 @@ class ConnectionConfig
             unset($config['profiling_collect_schema_errors']);
         }
 
+        if (array_key_exists('disable_type_comments', $config)) {
+            $this->_usedProperties['disableTypeComments'] = true;
+            $this->disableTypeComments = $config['disable_type_comments'];
+            unset($config['disable_type_comments']);
+        }
+
         if (array_key_exists('server_version', $config)) {
             $this->_usedProperties['serverVersion'] = true;
             $this->serverVersion = $config['server_version'];
@@ -923,6 +1049,12 @@ class ConnectionConfig
             $this->_usedProperties['wrapperClass'] = true;
             $this->wrapperClass = $config['wrapper_class'];
             unset($config['wrapper_class']);
+        }
+
+        if (array_key_exists('keep_slave', $config)) {
+            $this->_usedProperties['keepSlave'] = true;
+            $this->keepSlave = $config['keep_slave'];
+            unset($config['keep_slave']);
         }
 
         if (array_key_exists('keep_replica', $config)) {
@@ -961,6 +1093,12 @@ class ConnectionConfig
             unset($config['result_cache']);
         }
 
+        if (array_key_exists('slaves', $config)) {
+            $this->_usedProperties['slaves'] = true;
+            $this->slaves = array_map(fn ($v) => \is_array($v) ? new \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig($v) : $v, $config['slaves']);
+            unset($config['slaves']);
+        }
+
         if (array_key_exists('replicas', $config)) {
             $this->_usedProperties['replicas'] = true;
             $this->replicas = array_map(fn ($v) => \is_array($v) ? new \Symfony\Config\Doctrine\Dbal\ConnectionConfig\ReplicaConfig($v) : $v, $config['replicas']);
@@ -992,6 +1130,9 @@ class ConnectionConfig
         }
         if (isset($this->_usedProperties['password'])) {
             $output['password'] = $this->password;
+        }
+        if (isset($this->_usedProperties['overrideUrl'])) {
+            $output['override_url'] = $this->overrideUrl;
         }
         if (isset($this->_usedProperties['dbnameSuffix'])) {
             $output['dbname_suffix'] = $this->dbnameSuffix;
@@ -1053,6 +1194,9 @@ class ConnectionConfig
         if (isset($this->_usedProperties['multipleActiveResultSets'])) {
             $output['MultipleActiveResultSets'] = $this->multipleActiveResultSets;
         }
+        if (isset($this->_usedProperties['useSavepoints'])) {
+            $output['use_savepoints'] = $this->useSavepoints;
+        }
         if (isset($this->_usedProperties['instancename'])) {
             $output['instancename'] = $this->instancename;
         }
@@ -1061,6 +1205,9 @@ class ConnectionConfig
         }
         if (isset($this->_usedProperties['driver'])) {
             $output['driver'] = $this->driver;
+        }
+        if (isset($this->_usedProperties['platformService'])) {
+            $output['platform_service'] = $this->platformService;
         }
         if (isset($this->_usedProperties['autoCommit'])) {
             $output['auto_commit'] = $this->autoCommit;
@@ -1080,6 +1227,9 @@ class ConnectionConfig
         if (isset($this->_usedProperties['profilingCollectSchemaErrors'])) {
             $output['profiling_collect_schema_errors'] = $this->profilingCollectSchemaErrors;
         }
+        if (isset($this->_usedProperties['disableTypeComments'])) {
+            $output['disable_type_comments'] = $this->disableTypeComments;
+        }
         if (isset($this->_usedProperties['serverVersion'])) {
             $output['server_version'] = $this->serverVersion;
         }
@@ -1091,6 +1241,9 @@ class ConnectionConfig
         }
         if (isset($this->_usedProperties['wrapperClass'])) {
             $output['wrapper_class'] = $this->wrapperClass;
+        }
+        if (isset($this->_usedProperties['keepSlave'])) {
+            $output['keep_slave'] = $this->keepSlave;
         }
         if (isset($this->_usedProperties['keepReplica'])) {
             $output['keep_replica'] = $this->keepReplica;
@@ -1109,6 +1262,9 @@ class ConnectionConfig
         }
         if (isset($this->_usedProperties['resultCache'])) {
             $output['result_cache'] = $this->resultCache;
+        }
+        if (isset($this->_usedProperties['slaves'])) {
+            $output['slaves'] = array_map(fn ($v) => $v instanceof \Symfony\Config\Doctrine\Dbal\ConnectionConfig\SlaveConfig ? $v->toArray() : $v, $this->slaves);
         }
         if (isset($this->_usedProperties['replicas'])) {
             $output['replicas'] = array_map(fn ($v) => $v instanceof \Symfony\Config\Doctrine\Dbal\ConnectionConfig\ReplicaConfig ? $v->toArray() : $v, $this->replicas);

@@ -15,12 +15,16 @@ use Symfony\Contracts\Service\ServiceProviderInterface;
 /** @internal */
 final class ServiceMigrationsRepository implements MigrationsRepository
 {
+    /** @var ServiceProviderInterface<AbstractMigration> */
+    private $container;
+
     /** @var array<string, AvailableMigration> */
-    private array $migrations = [];
+    private $migrations = [];
 
     /** @param ServiceProviderInterface<AbstractMigration> $container */
-    public function __construct(private ServiceProviderInterface $container)
+    public function __construct(ServiceProviderInterface $container)
     {
+        $this->container = $container;
     }
 
     public function hasMigration(string $version): bool

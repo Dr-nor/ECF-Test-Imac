@@ -32,11 +32,13 @@ class ProfilerController
     /**
      * Renders the profiler panel for the given token.
      *
-     * @param string $token The profiler token
+     * @param string $token          The profiler token
+     * @param string $connectionName
+     * @param int    $query
      *
      * @return Response A Response instance
      */
-    public function explainAction(string $token, string $connectionName, int $query): Response
+    public function explainAction($token, $connectionName, $query)
     {
         $this->profiler->disable();
 

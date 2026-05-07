@@ -46,8 +46,6 @@ class ContainerEntityListenerResolver implements EntityListenerServiceResolver
 
     /**
      * {@inheritDoc}
-     *
-     * @param mixed $object
      */
     public function register($object): void
     {
@@ -62,11 +60,8 @@ class ContainerEntityListenerResolver implements EntityListenerServiceResolver
 
     /**
      * {@inheritDoc}
-     *
-     * @param string $className
-     * @param string $serviceId
      */
-    public function registerService($className, $serviceId): void
+    public function registerService($className, $serviceId)
     {
         $this->serviceIds[$this->normalizeClassName($className)] = $serviceId;
     }

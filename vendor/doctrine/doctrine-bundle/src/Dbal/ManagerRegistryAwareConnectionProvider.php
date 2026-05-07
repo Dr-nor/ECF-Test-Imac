@@ -8,8 +8,6 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Tools\Console\ConnectionProvider;
 use Doctrine\Persistence\AbstractManagerRegistry;
 
-use function assert;
-
 class ManagerRegistryAwareConnectionProvider implements ConnectionProvider
 {
     public function __construct(
@@ -19,17 +17,11 @@ class ManagerRegistryAwareConnectionProvider implements ConnectionProvider
 
     public function getDefaultConnection(): Connection
     {
-        $connection = $this->managerRegistry->getConnection();
-        assert($connection instanceof Connection);
-
-        return $connection;
+        return $this->managerRegistry->getConnection();
     }
 
     public function getConnection(string $name): Connection
     {
-        $connection = $this->managerRegistry->getConnection($name);
-        assert($connection instanceof Connection);
-
-        return $connection;
+        return $this->managerRegistry->getConnection($name);
     }
 }
