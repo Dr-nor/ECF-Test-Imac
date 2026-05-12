@@ -1,0 +1,7 @@
+.DS_Store
+.env
+vendor/
+var/cache/
+var/log/
+var/sessions/
+node_modules/
