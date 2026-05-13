@@ -324,6 +324,49 @@
       <tag name="controller.service_arguments"/>
       <tag name="routing.route_loader"/>
     </service>
+    <service id="App\Document\Avis" class="App\Document\Avis" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="with #[Doctrine\ODM\MongoDB\Mapping\Annotations\Document] attribute"/>
+    </service>
+    <service id="App\Entity\Commande" class="App\Entity\Commande" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="because it's a Doctrine entity"/>
+      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
+    </service>
+    <service id="App\Entity\Horaire" class="App\Entity\Horaire" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="because it's a Doctrine entity"/>
+      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
+    </service>
+    <service id="App\Entity\Menu" class="App\Entity\Menu" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="because it's a Doctrine entity"/>
+      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
+    </service>
+    <service id="App\Entity\Plat" class="App\Entity\Plat" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="because it's a Doctrine entity"/>
+      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
+    </service>
+    <service id="App\Entity\User" class="App\Entity\User" autowire="true" autoconfigure="true">
+      <tag name="container.excluded" source="because it's a Doctrine entity"/>
+      <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
+    </service>
+    <service id="App\Repository\CommandeRepository" class="App\Repository\CommandeRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\HoraireRepository" class="App\Repository\HoraireRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\MenuRepository" class="App\Repository\MenuRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\PlatRepository" class="App\Repository\PlatRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" autoconfigure="true">
+      <tag name="doctrine.repository_service"/>
+      <argument type="service" id="doctrine"/>
+    </service>
     <service id="argument_metadata_factory" class="Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory"/>
     <service id="argument_resolver.backed_enum_resolver" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver">
       <tag name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\BackedEnumValueResolver" priority="100">controller.argument_value_resolver</tag>
@@ -3321,7 +3364,7 @@
     <service id="doctrine.orm.configuration" class="Doctrine\ORM\Configuration" abstract="true"/>
     <service id="doctrine.orm.entity_manager.abstract" class="Doctrine\ORM\EntityManager" lazy="true" abstract="true"/>
     <service id="doctrine.orm.container_repository_factory" class="Doctrine\Bundle\DoctrineBundle\Repository\ContainerRepositoryFactory">
-      <argument type="service" id=".service_locator.dpiLQ5O"/>
+      <argument type="service" id=".service_locator.SLXDRVP"/>
     </service>
     <service id="doctrine.orm.manager_configurator.abstract" class="Doctrine\Bundle\DoctrineBundle\ManagerConfigurator" abstract="true">
       <argument type="collection"/>
@@ -4350,6 +4393,28 @@
       <argument>null</argument>
       <argument>false</argument>
     </service>
+    <service id=".instanceof.App\Document\Avis.0.App\Document\Avis" class="App\Document\Avis" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Document\Avis" class="App\Document\Avis" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.App\Entity\Commande.0.App\Entity\Commande" class="App\Entity\Commande" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Entity\Commande" class="App\Entity\Commande" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.App\Entity\Horaire.0.App\Entity\Horaire" class="App\Entity\Horaire" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Entity\Horaire" class="App\Entity\Horaire" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.App\Entity\Menu.0.App\Entity\Menu" class="App\Entity\Menu" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Entity\Menu" class="App\Entity\Menu" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.App\Entity\Plat.0.App\Entity\Plat" class="App\Entity\Plat" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Entity\Plat" class="App\Entity\Plat" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.App\Entity\User.0.App\Entity\User" class="App\Entity\User" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Entity\User" class="App\Entity\User" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CommandeRepository" class="App\Repository\CommandeRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\CommandeRepository" class="App\Repository\CommandeRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\HoraireRepository" class="App\Repository\HoraireRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\HoraireRepository" class="App\Repository\HoraireRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\MenuRepository" class="App\Repository\MenuRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\MenuRepository" class="App\Repository\MenuRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\PlatRepository" class="App\Repository\PlatRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\PlatRepository" class="App\Repository\PlatRepository" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Repository\UserRepository" class="App\Repository\UserRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".service_locator.ryAvHi4" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -4891,9 +4956,15 @@
         <argument key="doctrine.orm.default_listeners.attach_entity_listeners" type="service_closure" id="doctrine.orm.default_listeners.attach_entity_listeners"/>
       </argument>
     </service>
-    <service id=".service_locator.dpiLQ5O" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.SLXDRVP" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
-      <argument type="collection"/>
+      <argument type="collection">
+        <argument key="App\Repository\CommandeRepository" type="service_closure" id="App\Repository\CommandeRepository"/>
+        <argument key="App\Repository\HoraireRepository" type="service_closure" id="App\Repository\HoraireRepository"/>
+        <argument key="App\Repository\MenuRepository" type="service_closure" id="App\Repository\MenuRepository"/>
+        <argument key="App\Repository\PlatRepository" type="service_closure" id="App\Repository\PlatRepository"/>
+        <argument key="App\Repository\UserRepository" type="service_closure" id="App\Repository\UserRepository"/>
+      </argument>
     </service>
     <service id=".service_locator.W55Po6X" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
@@ -4927,6 +4998,10 @@
       <call method="setConnectionName">
         <argument>default</argument>
       </call>
+    </service>
+    <service id=".service_locator.dpiLQ5O" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection"/>
     </service>
     <service id="logger" class="Symfony\Component\HttpKernel\Log\Logger">
       <argument>null</argument>
