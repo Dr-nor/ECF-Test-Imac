@@ -1,0 +1,246 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Admin — Vite & Gourmand{% endblock %}
+
+{% block body %}
+
+{# ======= PAGE HEADER ======= #}
+<div class="page-header-blue">
+    <div class="container">
+        <h1><i class="bi bi-speedometer2 me-2"></i>Dashboard Admin</h1>
+        <p>Tableau de bord — Vite & Gourmand</p>
+    </div>
+</div>
+
+<div class="container py-4">
+
+    {# ======= CARTES STATS ======= #}
+    <div class="row g-4 mb-5">
+
+        <div class="col-12 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div style="font-size:2.5rem;color:#1A6BAD;">🍽️</div>
+                    <div class="display-6 fw-bold mt-2" style="color:#1A6BAD;">
+                        {{ totalMenus }}
+                    </div>
+                    <p class="text-muted mb-0">Menus au total</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div style="font-size:2.5rem;color:#2E8B57;">✓</div>
+                    <div class="display-6 fw-bold mt-2" style="color:#2E8B57;">
+                        {{ menusDisponibles }}
+                    </div>
+                    <p class="text-muted mb-0">Menus disponibles</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div style="font-size:2.5rem;color:#E8701A;">💬</div>
+                    <div class="display-6 fw-bold mt-2" style="color:#E8701A;">
+                        {{ totalAvis }}
+                    </div>
+                    <p class="text-muted mb-0">Avis total</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div style="font-size:2.5rem;color:#DC2626;">⏳</div>
+                    <div class="display-6 fw-bold mt-2" style="color:#DC2626;">
+                        {{ avisEnAttente }}
+                    </div>
+                    <p class="text-muted mb-0">Avis en attente</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {# ======= GRAPHIQUES CHARTJS ======= #}
+    <div class="row g-4 mb-5">
+
+        {# Graphique barres — Menus par thème #}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3" style="color:#1A6BAD;">
+                        <i class="bi bi-bar-chart me-2"></i>Menus par thème
+                    </h5>
+                    <canvas id="chartThemes" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        {# Graphique donut — Prix moyen par thème #}
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3" style="color:#1A6BAD;">
+                        <i class="bi bi-pie-chart me-2"></i>Prix moyen par thème
+                    </h5>
+                    <canvas id="chartPrix" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {# ======= TABLEAU MENUS PAR THÈME ======= #}
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-3" style="color:#1A6BAD;">
+                <i class="bi bi-table me-2"></i>Détail par thème
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead style="background:#1A6BAD;color:#fff;">
+                        <tr>
+                            <th class="ps-3">Thème</th>
+                            <th class="text-center">Nb menus</th>
+                            <th class="text-center">Prix moyen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for theme, stats in statsByTheme %}
+                        <tr>
+                            <td class="ps-3 fw-semibold">
+                                {% if theme == 'noel' %}🎄
+                                {% elseif theme == 'evenement' %}🥂
+                                {% elseif theme == 'paques' %}🥗
+                                {% elseif theme == 'corporate' %}💼
+                                {% else %}🍽️{% endif %}
+                                {{ theme|capitalize }}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge" style="background:#1A6BAD;">
+                                    {{ stats.count }}
+                                </span>
+                            </td>
+                            <td class="text-center fw-bold" style="color:#E8701A;">
+                                {{ stats.prixMoyen|number_format(2, ',', ' ') }} €
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# ======= LIENS RAPIDES ======= #}
+    <div class="row g-3">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3" style="color:#1A6BAD;">
+                        <i class="bi bi-lightning me-2"></i>Actions rapides
+                    </h5>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="{{ path('menu_index') }}"
+                           class="btn btn-primary">
+                            <i class="bi bi-grid me-2"></i>Voir les menus
+                        </a>
+                        <a href="{{ path('app_') }}"
+                           class="btn btn-outline-primary">
+                            <i class="bi bi-house me-2"></i>Accueil
+                        </a>
+                        <a href="{{ path('app_logout') }}"
+                           class="btn btn-outline-danger">
+                            <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{# ChartJS CDN #}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Données injectées depuis Symfony/Twig
+    const labels   = {{ chartLabels|raw }};
+    const data     = {{ chartData|raw }};
+    const dataPrix = {{ chartPrix|raw }};
+
+    // Couleurs charte graphique Vite & Gourmand
+    const couleurs = [
+        '#1A6BAD', '#E8701A', '#2E8B57',
+        '#DC2626', '#6B7280', '#0F4C7A'
+    ];
+
+    // -- Graphique 1 : Barres — Menus par thème --
+    new Chart(document.getElementById('chartThemes'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Nombre de menus',
+                data: data,
+                backgroundColor: couleurs,
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.parsed.y + ' menu(s)'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
+
+    // -- Graphique 2 : Donut — Prix moyen par thème --
+    new Chart(document.getElementById('chartPrix'), {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Prix moyen (€)',
+                data: dataPrix,
+                backgroundColor: couleurs,
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.label + ' : ' + ctx.parsed + ' €'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

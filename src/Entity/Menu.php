@@ -123,4 +123,8 @@ class Menu
 
         return $this;
     }
+    public function isDisponible(): bool
+    {
+        return $this->quantiteRestante !== null && $this->quantiteRestante > 0;
+    }
 }

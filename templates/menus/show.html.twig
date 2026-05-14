@@ -117,7 +117,7 @@
 
                     {% if menu.quantiteRestante > 0 %}
                         {# Phase 6 : href vers CommandeController #}
-                        <a href="{{ path('cmd_create') }}?menu_id={{ menu.id }}"
+                        <a href="{{ path('menu_index') }}"
                            class="btn-commander-detail">
                             <i class="bi bi-cart me-2"></i>Commander ce menu
                         </a>

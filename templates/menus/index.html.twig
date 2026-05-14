@@ -188,6 +188,6 @@
 {% endblock %}
 
 {% block javascripts %}
-{# filtres.js sera créé en Phase 5 — AJAX fetch() #}
-{# <script src="{{ asset('js/filtres.js') }}"></script> #}
+{{ parent() }}
+<script src="{{ asset('js/filtres.js') }}"></script>
 {% endblock %}
