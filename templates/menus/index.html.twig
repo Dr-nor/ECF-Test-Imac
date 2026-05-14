@@ -1,0 +1,193 @@
+{# templates/menus/index.html.twig
+   Capture jury #4.2a — Page /menus avec les 5 cartes Bootstrap
+   Capture jury #4.2b — Vue mobile 390px responsive
+   Conforme MK_ListeMenus.png : header bleu + filtres + grille col-4 + badges
+#}
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Menus — Vite & Gourmand{% endblock %}
+{% block meta_description %}Découvrez nos 5 menus événementiels : gastronomique, végétarien, mariage, Noël, corporate. Livraison incluse à Bordeaux.{% endblock %}
+
+{% block body %}
+
+{# ======= PAGE HEADER BLEU ======= #}
+<div class="page-header-blue">
+    <div class="container">
+        <h1><i class="bi bi-grid me-2"></i>Nos Menus</h1>
+        <p>{{ menus|length }} menus événementiels pour tous vos moments</p>
+    </div>
+</div>
+
+{# ======= ZONE FILTRES + LISTE ======= #}
+<section class="py-4">
+    <div class="container">
+
+        {# --- BARRE DE FILTRES (HTML statique — JS branché Phase 5) --- #}
+        <div class="filter-bar">
+            {# Desktop : inline #}
+            <div class="d-none d-md-flex align-items-center gap-3 flex-wrap">
+                <span class="filter-label">
+                    <i class="bi bi-funnel me-1"></i>Filtrer :
+                </span>
+
+                <select id="filtre-theme" class="form-select form-select-sm" style="width:140px;">
+                    <option value="">Thème ▾</option>
+                    <option value="classique">Classique</option>
+                    <option value="evenement">Événementiel</option>
+                    <option value="noel">Noël</option>
+                    <option value="paques">Pâques</option>
+                    <option value="corporate">Corporate</option>
+                </select>
+
+                <select id="filtre-prix" class="form-select form-select-sm" style="width:150px;">
+                    <option value="">Prix max ▾</option>
+                    <option value="30">Moins de 30 €</option>
+                    <option value="50">Moins de 50 €</option>
+                    <option value="70">Moins de 70 €</option>
+                    <option value="100">Moins de 100 €</option>
+                    <option value="200">Moins de 200 €</option>
+                </select>
+
+                <select id="filtre-regime" class="form-select form-select-sm" style="width:150px;">
+                    <option value="">Régime ▾</option>
+                    <option value="classique">Classique</option>
+                    <option value="vegetarien">Végétarien</option>
+                    <option value="vegan">Vegan</option>
+                    <option value="sans-gluten">Sans gluten</option>
+                </select>
+
+                <button id="btn-reinitialiser" class="btn-reinitialiser ms-auto">
+                    <i class="bi bi-x me-1"></i>Réinitialiser
+                </button>
+            </div>
+
+            {# Mobile : stacked #}
+            <div class="d-md-none">
+                <select id="filtre-theme-mobile" class="form-select mb-2">
+                    <option value="">Thème</option>
+                    <option value="classique">Classique</option>
+                    <option value="evenement">Événementiel</option>
+                    <option value="noel">Noël</option>
+                    <option value="paques">Pâques</option>
+                    <option value="corporate">Corporate</option>
+                </select>
+                <select id="filtre-prix-mobile" class="form-select mb-2">
+                    <option value="">Prix max</option>
+                    <option value="50">Moins de 50 €</option>
+                    <option value="100">Moins de 100 €</option>
+                    <option value="200">Moins de 200 €</option>
+                </select>
+                <button id="btn-filtrer-mobile" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel me-2"></i>Filtrer les menus
+                </button>
+            </div>
+        </div>
+
+        {# --- COMPTEUR + TRIER --- #}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <p class="results-count mb-0" id="results-count">
+                <strong>{{ menus|length }}</strong> menus disponibles
+            </p>
+            <div class="d-none d-md-block">
+                <select class="form-select form-select-sm" style="width:175px;" id="tri-select">
+                    <option>Trier : Prix croissant</option>
+                    <option>Trier : Prix décroissant</option>
+                    <option>Trier : Nom A-Z</option>
+                </select>
+            </div>
+        </div>
+
+        {# --- SPINNER AJAX (masqué par défaut, visible pendant fetch) --- #}
+        <div id="loading-spinner">
+            <div class="spinner-border spinner-border-vg" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="mt-2 text-muted small">Filtrage en cours…</p>
+        </div>
+
+        {# --- GRILLE DES MENUS --- #}
+        <div id="menus-container" class="row g-4">
+            {% for menu in menus %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="menu-card">
+                    {# Image colorée selon thème #}
+                    <div class="menu-card-image theme-{{ menu.theme|default('default') }}">
+                        {% if menu.theme == 'noel'      %}🎄
+                        {% elseif menu.theme == 'evenement' %}🥂
+                        {% elseif menu.theme == 'paques'    %}🥗
+                        {% elseif menu.theme == 'corporate' %}💼
+                        {% else %}🍽️{% endif %}
+
+                        {# Badge statut #}
+                        {% if menu.quantiteRestante > 0 %}
+                            <span class="menu-card-badge badge-disponible">Disponible</span>
+                        {% else %}
+                            <span class="menu-card-badge badge-complet">Complet</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="menu-card-body">
+                        <div class="menu-card-theme">
+                            {{ menu.theme|upper|default('CLASSIQUE') }}
+                        </div>
+                        <h2 class="menu-card-title">{{ menu.titre }}</h2>
+                        <p class="menu-card-persons">
+                            <i class="bi bi-people"></i>
+                            {{ menu.nombrePersonneMinimum }} à 50 personnes
+                        </p>
+                        <p class="menu-card-desc">{{ menu.description }}</p>
+
+                        <div class="menu-card-footer">
+                            <div>
+                                <div class="menu-price">
+                                    {{ menu.prix|number_format(2, ',', ' ') }} €
+                                </div>
+                                <small class="text-muted" style="font-size:.72rem;">par personne TTC</small>
+                            </div>
+                            {% if menu.quantiteRestante > 0 %}
+                                <a href="{{ path('menu_show', {id: menu.id}) }}"
+                                   class="btn btn-primary btn-sm">
+                                    Voir détail
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary btn-sm" disabled>
+                                    Indisponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-search" style="font-size:3rem;color:var(--border);"></i>
+                    <p class="text-muted mt-3">Aucun menu trouvé pour ces critères.</p>
+                    <button id="btn-reset-empty" class="btn btn-outline-primary mt-2">
+                        Voir tous les menus
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {# --- Pagination (statique pour Phase 4, dynamique Phase 5+) --- #}
+        {% if menus|length > 6 %}
+        <nav class="mt-4 d-flex justify-content-center" aria-label="Pagination">
+            <ul class="pagination">
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+            </ul>
+        </nav>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block javascripts %}
+{# filtres.js sera créé en Phase 5 — AJAX fetch() #}
+{# <script src="{{ asset('js/filtres.js') }}"></script> #}
+{% endblock %}

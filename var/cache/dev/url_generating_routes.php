@@ -18,4 +18,12 @@ return [
     '_profiler_router' => [['token'], ['_controller' => 'web_profiler.controller.router::panelAction'], [], [['text', '/router'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], [], []],
     '_profiler_exception' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::body'], [], [['text', '/exception'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], [], []],
     '_profiler_exception_css' => [['token'], ['_controller' => 'web_profiler.controller.exception_panel::stylesheet'], [], [['text', '/exception.css'], ['variable', '/', '[^/]++', 'token', true], ['text', '/_profiler']], [], [], []],
+    'app_' => [[], ['_controller' => 'App\\Controller\\HomeController::index'], [], [['text', '/']], [], [], []],
+    'menu_index' => [[], ['_controller' => 'App\\Controller\\MenuController::index'], [], [['text', '/menus']], [], [], []],
+    'menu_show' => [['id'], ['_controller' => 'App\\Controller\\MenuController::show'], ['id' => '\\d+'], [['variable', '/', '\\d+', 'id', true], ['text', '/menus']], [], [], []],
+    'menu_api_menus' => [[], ['_controller' => 'App\\Controller\\MenuController::filterMenus'], [], [['text', '/menus/api/menus']], [], [], []],
+    'App\Controller\HomeController::index' => [[], ['_controller' => 'App\\Controller\\HomeController::index'], [], [['text', '/']], [], [], []],
+    'App\Controller\MenuController::index' => [[], ['_controller' => 'App\\Controller\\MenuController::index'], [], [['text', '/menus']], [], [], []],
+    'App\Controller\MenuController::show' => [['id'], ['_controller' => 'App\\Controller\\MenuController::show'], ['id' => '\\d+'], [['variable', '/', '\\d+', 'id', true], ['text', '/menus']], [], [], []],
+    'App\Controller\MenuController::filterMenus' => [[], ['_controller' => 'App\\Controller\\MenuController::filterMenus'], [], [['text', '/menus/api/menus']], [], [], []],
 ];

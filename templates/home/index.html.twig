@@ -1,0 +1,173 @@
+{# templates/home/index.html.twig
+   Capture jury #4.1 — Page accueil avec navbar #1A6BAD
+   Conforme MK_Accueil.png : Hero bleu + 3 cartes + section "Pourquoi" + footer
+#}
+{% extends 'base.html.twig' %}
+
+{% block title %}Vite & Gourmand — Traiteur événementiel Bordeaux{% endblock %}
+{% block meta_description %}Julie & José créent des expériences culinaires inoubliables pour vos mariages, séminaires et événements à Bordeaux.{% endblock %}
+
+{% block body %}
+
+{# ======= HERO SECTION ======= #}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            {# Texte hero gauche #}
+            <div class="col-12 col-lg-6">
+                <span class="hero-badge">
+                    <i class="bi bi-geo-alt me-1"></i> Traiteur événementiel Bordeaux
+                </span>
+                <h1 class="hero-title">
+                    Le traiteur qui<br>
+                    <span class="accent-word">régale Bordeaux</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Julie & José créent des expériences culinaires inoubliables
+                    pour vos mariages, séminaires et événements.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{{ path('menu_index') }}" class="btn btn-accent btn-lg px-4">
+                        <i class="bi bi-grid me-2"></i>Découvrir nos menus
+                    </a>
+                    <a href="#contact" class="btn btn-outline-white btn-lg px-4">
+                        <i class="bi bi-telephone me-2"></i>Nous contacter
+                    </a>
+                </div>
+            </div>
+
+            {# Image droite (placeholder) #}
+            <div class="col-12 col-lg-6">
+                <div class="hero-image-placeholder">
+                    <span>
+                        <i class="bi bi-camera" style="font-size:2rem;display:block;margin-bottom:.5rem;"></i>
+                        Photo ambiance restaurant
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ======= NOS MENUS DU MOMENT ======= #}
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="section-title">
+                    Nos menus du <span class="accent-word">moment</span>
+                </h2>
+            </div>
+            <a href="{{ path('menu_index') }}" class="text-primary fw-semibold small d-none d-md-block">
+                Voir tous les menus <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            {% for menu in menus %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="menu-card">
+                    {# Image colorée selon thème #}
+                    <div class="menu-card-image theme-{{ menu.theme|default('default') }}">
+                        {% if menu.theme == 'noel' %}🎄
+                        {% elseif menu.theme == 'evenement' %}🥂
+                        {% elseif menu.theme == 'paques' %}🥗
+                        {% elseif menu.theme == 'corporate' %}💼
+                        {% else %}🍽️{% endif %}
+
+                        {# Badge disponible / complet #}
+                        {% if menu.quantiteRestante > 0 %}
+                            <span class="menu-card-badge badge-disponible">Disponible</span>
+                        {% else %}
+                            <span class="menu-card-badge badge-complet">Complet</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="menu-card-body">
+                        <div class="menu-card-theme">
+                            {{ menu.theme|upper|default('CLASSIQUE') }}
+                        </div>
+                        <h3 class="menu-card-title">{{ menu.titre }}</h3>
+                        <p class="menu-card-persons">
+                            <i class="bi bi-people"></i>
+                            {{ menu.nombrePersonneMinimum }} à 50 pers.
+                        </p>
+                        <p class="menu-card-desc">{{ menu.description }}</p>
+
+                        <div class="menu-card-footer">
+                            <div>
+                                <div class="menu-price">
+                                    {{ menu.prix|number_format(2, ',', ' ') }} €
+                                </div>
+                                <small class="text-muted" style="font-size:.72rem;">par personne TTC</small>
+                            </div>
+                            {% if menu.quantiteRestante > 0 %}
+                                <a href="{{ path('menu_show', {id: menu.id}) }}"
+                                   class="btn btn-primary btn-sm">
+                                    Voir détail
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary btn-sm" disabled>
+                                    Indisponible
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {# Lien mobile "Voir tous" #}
+        <div class="text-center mt-4 d-md-none">
+            <a href="{{ path('menu_index') }}" class="btn btn-outline-primary">
+                Voir tous les menus <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+{# ======= POURQUOI CHOISIR JULIE & JOSÉ ======= #}
+<section class="why-section">
+    <div class="container text-center">
+        <h2 class="section-title mb-1">
+            Pourquoi choisir <span class="accent-word">Julie & José</span> ?
+        </h2>
+        <p class="section-subtitle mb-5">Un traiteur de confiance depuis 2015</p>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-12 col-md-4">
+                <div class="why-icon-wrap">
+                    <i class="bi bi-award"></i>
+                </div>
+                <h3 class="why-title">Qualité premium</h3>
+                <p class="why-desc">
+                    Produits frais sélectionnés chez les producteurs locaux bordelais.
+                    Cuisine faite maison, sans compromis.
+                </p>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="why-icon-wrap">
+                    <i class="bi bi-truck"></i>
+                </div>
+                <h3 class="why-title">Livraison incluse</h3>
+                <p class="why-desc">
+                    Nous livrons et installons tout sur le lieu de votre événement.
+                    Vous profitez, on s'occupe du reste.
+                </p>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="why-icon-wrap">
+                    <i class="bi bi-sliders"></i>
+                </div>
+                <h3 class="why-title">Sur mesure</h3>
+                <p class="why-desc">
+                    Chaque menu est adaptable selon vos contraintes :
+                    allergies, régimes, thème de l'événement.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

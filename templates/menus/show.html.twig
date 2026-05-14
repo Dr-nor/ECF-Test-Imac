@@ -1,0 +1,234 @@
+{# templates/menus/show.html.twig
+   Conforme MK_DetailMenu.png
+   Layout : image gauche col-5 / infos droite col-7
+   Sections : badge dispo + prix + -10% + checklist + formulaire inline + avis + "Vous aimerez aussi"
+#}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ menu.titre }} — Vite & Gourmand{% endblock %}
+{% block meta_description %}{{ menu.description|slice(0, 155) }}{% endblock %}
+
+{% block body %}
+
+{# ======= BREADCRUMB ======= #}
+<div class="container">
+    <nav aria-label="breadcrumb" class="breadcrumb-vg">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_') }}">Accueil</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ path('menu_index') }}">Nos menus</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ menu.titre }}
+            </li>
+        </ol>
+    </nav>
+</div>
+
+{# ======= SECTION PRINCIPALE : Image + Infos ======= #}
+<section class="py-4">
+    <div class="container">
+        <div class="row g-4 align-items-start">
+
+            {# ---- COLONNE GAUCHE : Image ---- #}
+            <div class="col-12 col-lg-5">
+                <div class="detail-image-wrap theme-{{ menu.theme|default('default') }}">
+                    {% if menu.theme == 'noel'       %}🎄
+                    {% elseif menu.theme == 'evenement'  %}🥂
+                    {% elseif menu.theme == 'paques'     %}🥗
+                    {% elseif menu.theme == 'corporate'  %}💼
+                    {% else %}🍽️{% endif %}
+
+                    {# Badge disponible / complet #}
+                    {% if menu.quantiteRestante > 0 %}
+                        <span class="detail-badge">✓ Disponible</span>
+                    {% else %}
+                        <span class="detail-badge complet">✗ Complet</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# ---- COLONNE DROITE : Infos + Formulaire ---- #}
+            <div class="col-12 col-lg-7">
+
+                {# Thème label #}
+                <div class="detail-theme-label">
+                    {{ menu.theme|upper|default('CLASSIQUE') }}
+                    · {{ menu.regime|upper|default('CLASSIQUE') }}
+                </div>
+
+                {# Titre #}
+                <h1 class="detail-title">{{ menu.titre }}</h1>
+
+                {# Note étoiles (statique Phase 4 — dynamique Phase 7 avec MongoDB) #}
+                <div class="detail-rating">
+                    <span class="stars">★★★★★</span>
+                    <span class="ms-1">4.9/5</span>
+                    <span class="text-muted ms-1">· 24 avis</span>
+                </div>
+
+                {# Prix #}
+                <div class="detail-price">
+                    {{ menu.prix|number_format(2, ',', ' ') }} €
+                    <small class="ms-1">par personne TTC</small>
+                </div>
+
+                {# Badge réduction -10% #}
+                <div class="detail-reduction-badge mt-2">
+                    🏷️ -10% pour {{ menu.nombrePersonneMinimum }} personnes ou plus !
+                </div>
+
+                {# Description #}
+                <p class="text-muted mt-2 mb-3" style="font-size:.92rem;line-height:1.6;">
+                    {{ menu.description }}
+                </p>
+
+                {# Conditions / Checklist #}
+                <ul class="detail-conditions">
+                    <li>Entrée, plat, fromage, dessert</li>
+                    <li>Service et livraison inclus</li>
+                    <li>{{ menu.nombrePersonneMinimum }} à 50 personnes</li>
+                    <li>Personnalisable selon allergies</li>
+                    {% if menu.regime and menu.regime != 'classique' %}
+                        <li>Option {{ menu.regime }} disponible</li>
+                    {% endif %}
+                </ul>
+
+                {# ---- Formulaire Commander (Phase 6 actif, Phase 4 affiché) ---- #}
+                <div class="detail-form-box">
+                    <div class="mb-3">
+                        <label for="nb-personnes">Nombre de personnes</label>
+                        <select class="form-select" id="nb-personnes">
+                            <option value="">Sélectionner…</option>
+                            {% for i in range(menu.nombrePersonneMinimum, 50) %}
+                                <option value="{{ i }}">{{ i }} personnes</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-1">
+                        <label for="date-prestation">Date de prestation</label>
+                        <input type="date"
+                               class="form-control"
+                               id="date-prestation"
+                               placeholder="JJ/MM/AAAA">
+                    </div>
+
+                    {% if menu.quantiteRestante > 0 %}
+                        {# Phase 6 : href vers CommandeController #}
+                        <a href="{{ path('cmd_create') }}?menu_id={{ menu.id }}"
+                           class="btn-commander-detail">
+                            <i class="bi bi-cart me-2"></i>Commander ce menu
+                        </a>
+                    {% else %}
+                        <button class="btn-commander-detail" style="background:var(--gray);cursor:not-allowed;" disabled>
+                            <i class="bi bi-x-circle me-2"></i>Menu indisponible
+                        </button>
+                    {% endif %}
+
+                    <a href="#contact" class="btn-contacter mt-2">
+                        <i class="bi bi-telephone me-2"></i>Nous contacter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ======= SECTION AVIS CLIENTS ======= #}
+<section class="py-5 border-top">
+    <div class="container">
+        <h2 class="section-title mb-1">
+            Avis <span class="accent-word">clients</span>
+        </h2>
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <span class="avis-global-score">4.9</span>
+            <div>
+                <div class="avis-stars">★★★★★</div>
+                <div class="text-muted small">sur 24 avis vérifiés</div>
+            </div>
+        </div>
+
+        {# Avis statiques Phase 4 — dynamiques Phase 7 via MongoDB #}
+        <div class="row g-3">
+            <div class="col-12 col-md-4">
+                <div class="avis-card">
+                    <div class="d-flex justify-content-between">
+                        <span class="avis-card-author">Marie L.</span>
+                        <span class="avis-card-date">Mars 2026</span>
+                    </div>
+                    <div class="avis-stars" style="font-size:.9rem;">★★★★★</div>
+                    <p class="avis-card-text">
+                        Exceptionnel ! Le foie gras était divin et le service impeccable.
+                        Tous nos invités ont été conquis. On recommande vivement.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="avis-card">
+                    <div class="d-flex justify-content-between">
+                        <span class="avis-card-author">Pierre D.</span>
+                        <span class="avis-card-date">Fév. 2026</span>
+                    </div>
+                    <div class="avis-stars" style="font-size:.9rem;">★★★★☆</div>
+                    <p class="avis-card-text">
+                        Très bon repas, produits de qualité.
+                        Légèrement en retard sur la livraison mais rien de grave.
+                    </p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="avis-card">
+                    <div class="d-flex justify-content-between">
+                        <span class="avis-card-author">Sophie M.</span>
+                        <span class="avis-card-date">Jan. 2026</span>
+                    </div>
+                    <div class="avis-stars" style="font-size:.9rem;">★★★★★</div>
+                    <p class="avis-card-text">
+                        Julie et José sont des pros ! Menu équilibré, saveurs au rendez-vous.
+                        Notre mariage était parfait grâce à eux.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ======= SECTION "VOUS AIMEREZ AUSSI" ======= #}
+{% if autresMenus is defined and autresMenus|length > 0 %}
+<section class="section-also">
+    <div class="container">
+        <h2 class="section-title mb-4">
+            Vous aimerez <span class="accent-word">aussi</span>
+        </h2>
+        <div class="row g-4">
+            {% for autreMenu in autresMenus %}
+            <div class="col-12 col-md-4">
+                <div class="also-card">
+                    <div class="also-card-img theme-{{ autreMenu.theme|default('default') }}">
+                        {% if autreMenu.theme == 'noel'       %}🎄
+                        {% elseif autreMenu.theme == 'evenement'  %}🥂
+                        {% elseif autreMenu.theme == 'paques'     %}🥗
+                        {% elseif autreMenu.theme == 'corporate'  %}💼
+                        {% else %}🍽️{% endif %}
+                    </div>
+                    <div class="also-card-body">
+                        <h3 class="also-card-title">{{ autreMenu.titre }}</h3>
+                        <div class="also-card-price">
+                            {{ autreMenu.prix|number_format(2, ',', ' ') }} €
+                        </div>
+                        <a href="{{ path('menu_show', {id: autreMenu.id}) }}"
+                           class="btn btn-primary btn-sm w-100">
+                            Voir le menu
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}
