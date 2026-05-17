@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Commande;
 use App\Repository\MenuRepository;
 use App\Repository\CommandeRepository;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Document\Avis;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -20,18 +23,11 @@ class AdminController extends AbstractController
         MenuRepository $menuRepo,
         DocumentManager $dm
     ): Response {
-
-        // -- Stats MariaDB --
-        // Nombre total de menus
         $totalMenus = count($menuRepo->findAll());
-
-        // Menus disponibles (quantiteRestante > 0)
         $menusDisponibles = count(array_filter(
             $menuRepo->findAll(),
             fn($m) => $m->getQuantiteRestante() > 0
         ));
-
-        // -- Stats par thème pour ChartJS --
         $menus = $menuRepo->findAll();
         $statsByTheme = [];
         foreach ($menus as $menu) {
@@ -45,18 +41,11 @@ class AdminController extends AbstractController
         foreach ($statsByTheme as $theme => &$stats) {
             $stats['prixMoyen'] = round($stats['total'] / $stats['count'], 2);
         }
-
-        // -- Stats MongoDB -- Avis en attente de validation
-        $avisEnAttente = $dm->getRepository(Avis::class)
-            ->findBy(['statut' => 'en_attente']);
+        $avisEnAttente = $dm->getRepository(Avis::class)->findBy(['statut' => 'en_attente']);
         $totalAvis = count($dm->getRepository(Avis::class)->findAll());
-
-        // -- Données pour ChartJS --
-        // Labels et données extraits pour le graphique
         $chartLabels = array_map('ucfirst', array_keys($statsByTheme));
         $chartData   = array_column(array_values($statsByTheme), 'count');
         $chartPrix   = array_column(array_values($statsByTheme), 'prixMoyen');
-
         return $this->render('admin/dashboard.html.twig', [
             'totalMenus'       => $totalMenus,
             'menusDisponibles' => $menusDisponibles,
@@ -67,5 +56,32 @@ class AdminController extends AbstractController
             'chartData'        => json_encode($chartData),
             'chartPrix'        => json_encode($chartPrix),
         ]);
+    }
+
+    #[Route('/commandes', name: 'admin_commandes')]
+    public function commandes(CommandeRepository $commandeRepo): Response
+    {
+        $commandes = $commandeRepo->findBy([], ['dateCommande' => 'DESC']);
+        return $this->render('admin/commandes.html.twig', [
+            'commandes' => $commandes,
+        ]);
+    }
+
+    #[Route('/commandes/{id}/statut', name: 'admin_commande_statut', methods: ['POST'])]
+    public function changerStatut(
+        Commande $commande,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $nouveauStatut = $request->request->get('statut');
+        $statutsValides = ['en_attente', 'confirmée', 'livrée', 'annulée'];
+        if (in_array($nouveauStatut, $statutsValides)) {
+            $commande->setStatut($nouveauStatut);
+            $em->flush();
+            $this->addFlash('success', 'Statut mis à jour : ' . $nouveauStatut);
+        } else {
+            $this->addFlash('danger', 'Statut invalide.');
+        }
+        return $this->redirectToRoute('admin_commandes');
     }
 }

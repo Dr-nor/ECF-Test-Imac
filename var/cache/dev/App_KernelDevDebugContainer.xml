@@ -373,6 +373,14 @@
         <argument type="service" id=".service_locator.TJNRSaV.App\Controller\AdminController"/>
       </call>
     </service>
+    <service id="App\Controller\CommandeController" class="App\Controller\CommandeController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="routing.controller"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.TJNRSaV.App\Controller\CommandeController"/>
+      </call>
+    </service>
     <service id="App\Controller\HomeController" class="App\Controller\HomeController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="routing.controller"/>
@@ -420,6 +428,9 @@
       <tag name="container.excluded" source="because it's a Doctrine entity"/>
       <tag name="container.excluded" source="with #[Doctrine\ORM\Mapping\Entity] attribute"/>
     </service>
+    <service id="App\Form\CommandeType" class="App\Form\CommandeType" autowire="true" autoconfigure="true">
+      <tag name="form.type" csrf_token_id="%.form.type_extension.csrf.token_id%"/>
+    </service>
     <service id="App\Repository\CommandeRepository" class="App\Repository\CommandeRepository" autowire="true" autoconfigure="true">
       <tag name="doctrine.repository_service"/>
       <argument type="service" id="doctrine"/>
@@ -463,7 +474,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
       <tag name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" priority="-50">controller.argument_value_resolver</tag>
-      <argument type="service" id=".service_locator.9JWxdIs"/>
+      <argument type="service" id=".service_locator.3AiV1sb"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver">
       <tag name="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" priority="-100">controller.argument_value_resolver</tag>
@@ -1105,10 +1116,12 @@
       <argument type="service" id="form.registry"/>
       <argument type="collection">
         <argument>Symfony\Component\Form\Extension\Core\Type</argument>
+        <argument>App\Form</argument>
         <argument>Symfony\Bridge\Doctrine\Form\Type</argument>
         <argument>Doctrine\Bundle\MongoDBBundle\Form\Type</argument>
       </argument>
       <argument type="collection">
+        <argument>App\Form\CommandeType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FormType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\ChoiceType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FileType</argument>
@@ -2047,7 +2060,7 @@
     </service>
     <service id="argument_resolver.not_tagged_controller" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
       <tag name="controller.argument_value_resolver" priority="-200"/>
-      <argument type="service" id=".service_locator.9JWxdIs"/>
+      <argument type="service" id=".service_locator.3AiV1sb"/>
     </service>
     <service id="routing.resolver" class="Symfony\Component\Config\Loader\LoaderResolver">
       <call method="addLoader">
@@ -2122,6 +2135,7 @@
       <tag name="routing.loader" priority="-10"/>
       <argument type="collection">
         <argument>App\Controller\AdminController</argument>
+        <argument>App\Controller\CommandeController</argument>
         <argument>App\Controller\HomeController</argument>
         <argument>App\Controller\MenuController</argument>
         <argument>App\Controller\SecurityController</argument>
@@ -2427,7 +2441,7 @@
       <argument type="service" id="form.registry"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension">
-      <argument type="service" id=".service_locator.uckz52C"/>
+      <argument type="service" id=".service_locator.kAhtWZS"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.transformation_failure_handling"/>
@@ -2530,7 +2544,9 @@
       <argument>validators</argument>
       <argument type="service" id="form.server_params"/>
       <argument>%form.type_extension.csrf.field_attr%</argument>
-      <argument>submit</argument>
+      <argument type="collection">
+        <argument key="App\Form\CommandeType">submit</argument>
+      </argument>
     </service>
     <service id="validator.builder" class="Symfony\Component\Validator\ValidatorBuilder">
       <call method="setConstraintValidatorFactory">
@@ -5549,6 +5565,10 @@
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\AdminController" class="App\Controller\AdminController" autowire="true" abstract="true"/>
     <service id=".instanceof.App\Controller\AdminController.0.App\Controller\AdminController" class="App\Controller\AdminController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\AdminController" class="App\Controller\AdminController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\CommandeController" class="App\Controller\CommandeController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\CommandeController" class="App\Controller\CommandeController" autowire="true" abstract="true"/>
+    <service id=".instanceof.App\Controller\CommandeController.0.App\Controller\CommandeController" class="App\Controller\CommandeController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\CommandeController" class="App\Controller\CommandeController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\HomeController" class="App\Controller\HomeController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\HomeController" class="App\Controller\HomeController" autowire="true" abstract="true"/>
     <service id=".instanceof.App\Controller\HomeController.0.App\Controller\HomeController" class="App\Controller\HomeController" autowire="true" abstract="true"/>
@@ -5573,6 +5593,8 @@
     <service id=".abstract.instanceof.App\Entity\Plat" class="App\Entity\Plat" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.App\Entity\User.0.App\Entity\User" class="App\Entity\User" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Entity\User" class="App\Entity\User" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\CommandeType" class="App\Form\CommandeType" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Form\CommandeType" class="App\Form\CommandeType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CommandeRepository" class="App\Repository\CommandeRepository" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Repository\CommandeRepository" class="App\Repository\CommandeRepository" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\HoraireRepository" class="App\Repository\HoraireRepository" autowire="true" abstract="true"/>
@@ -6130,6 +6152,69 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.qCuA8sq" method="withContext"/>
     </service>
+    <service id=".service_locator.LRdXfs_" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="commandeRepo" type="service_closure" id="App\Repository\CommandeRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.LRdXfs_.App\Controller\AdminController::commandes()" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\AdminController::commandes()"/>
+      <argument>App\Controller\AdminController::commandes()</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.LRdXfs_" method="withContext"/>
+    </service>
+    <service id=".service_locator.J92g9LK" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="commande" type="service_closure" id=".errored..service_locator.J92g9LK.App\Entity\Commande"/>
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+      </argument>
+    </service>
+    <service id=".service_locator.J92g9LK.App\Controller\AdminController::changerStatut()" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\AdminController::changerStatut()"/>
+      <argument>App\Controller\AdminController::changerStatut()</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.J92g9LK" method="withContext"/>
+    </service>
+    <service id=".service_locator.JColMOm" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="em" type="service_closure" id="doctrine.orm.default_entity_manager"/>
+        <argument key="menuRepository" type="service_closure" id="App\Repository\MenuRepository"/>
+        <argument key="mailer" type="service_closure" id="mailer.mailer"/>
+      </argument>
+    </service>
+    <service id=".service_locator.JColMOm.App\Controller\CommandeController::create()" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\CommandeController::create()"/>
+      <argument>App\Controller\CommandeController::create()</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.JColMOm" method="withContext"/>
+    </service>
+    <service id=".service_locator.0Q_nXe_" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="commande" type="service_closure" id=".errored..service_locator.0Q_nXe_.App\Entity\Commande"/>
+      </argument>
+    </service>
+    <service id=".service_locator.0Q_nXe_.App\Controller\CommandeController::confirm()" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\CommandeController::confirm()"/>
+      <argument>App\Controller\CommandeController::confirm()</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.0Q_nXe_" method="withContext"/>
+    </service>
+    <service id=".service_locator.vFJD2_9" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="commandeRepository" type="service_closure" id="App\Repository\CommandeRepository"/>
+      </argument>
+    </service>
+    <service id=".service_locator.vFJD2_9.App\Controller\CommandeController::historique()" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\CommandeController::historique()"/>
+      <argument>App\Controller\CommandeController::historique()</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.vFJD2_9" method="withContext"/>
+    </service>
     <service id=".service_locator.nhhyrwr" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -6172,7 +6257,7 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.0MQaTBY" method="withContext"/>
     </service>
-    <service id=".service_locator.9JWxdIs" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.3AiV1sb" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="kernel::registerContainerConfiguration" type="service_closure" id=".service_locator.1vYpZ1B.kernel::registerContainerConfiguration()"/>
@@ -6180,6 +6265,11 @@
         <argument key="kernel::loadRoutes" type="service_closure" id=".service_locator.1vYpZ1B.kernel::loadRoutes()"/>
         <argument key="App\Kernel::loadRoutes" type="service_closure" id=".service_locator.1vYpZ1B.kernel::loadRoutes()"/>
         <argument key="App\Controller\AdminController::dashboard" type="service_closure" id=".service_locator.qCuA8sq.App\Controller\AdminController::dashboard()"/>
+        <argument key="App\Controller\AdminController::commandes" type="service_closure" id=".service_locator.LRdXfs_.App\Controller\AdminController::commandes()"/>
+        <argument key="App\Controller\AdminController::changerStatut" type="service_closure" id=".service_locator.J92g9LK.App\Controller\AdminController::changerStatut()"/>
+        <argument key="App\Controller\CommandeController::create" type="service_closure" id=".service_locator.JColMOm.App\Controller\CommandeController::create()"/>
+        <argument key="App\Controller\CommandeController::confirm" type="service_closure" id=".service_locator.0Q_nXe_.App\Controller\CommandeController::confirm()"/>
+        <argument key="App\Controller\CommandeController::historique" type="service_closure" id=".service_locator.vFJD2_9.App\Controller\CommandeController::historique()"/>
         <argument key="App\Controller\HomeController::index" type="service_closure" id=".service_locator.nhhyrwr.App\Controller\HomeController::index()"/>
         <argument key="App\Controller\MenuController::index" type="service_closure" id=".service_locator.nhhyrwr.App\Controller\MenuController::index()"/>
         <argument key="App\Controller\MenuController::show" type="service_closure" id=".service_locator.nhhyrwr.App\Controller\MenuController::show()"/>
@@ -6188,6 +6278,11 @@
         <argument key="kernel:registerContainerConfiguration" type="service_closure" id=".service_locator.1vYpZ1B.kernel::registerContainerConfiguration()"/>
         <argument key="kernel:loadRoutes" type="service_closure" id=".service_locator.1vYpZ1B.kernel::loadRoutes()"/>
         <argument key="App\Controller\AdminController:dashboard" type="service_closure" id=".service_locator.qCuA8sq.App\Controller\AdminController::dashboard()"/>
+        <argument key="App\Controller\AdminController:commandes" type="service_closure" id=".service_locator.LRdXfs_.App\Controller\AdminController::commandes()"/>
+        <argument key="App\Controller\AdminController:changerStatut" type="service_closure" id=".service_locator.J92g9LK.App\Controller\AdminController::changerStatut()"/>
+        <argument key="App\Controller\CommandeController:create" type="service_closure" id=".service_locator.JColMOm.App\Controller\CommandeController::create()"/>
+        <argument key="App\Controller\CommandeController:confirm" type="service_closure" id=".service_locator.0Q_nXe_.App\Controller\CommandeController::confirm()"/>
+        <argument key="App\Controller\CommandeController:historique" type="service_closure" id=".service_locator.vFJD2_9.App\Controller\CommandeController::historique()"/>
         <argument key="App\Controller\HomeController:index" type="service_closure" id=".service_locator.nhhyrwr.App\Controller\HomeController::index()"/>
         <argument key="App\Controller\MenuController:index" type="service_closure" id=".service_locator.nhhyrwr.App\Controller\MenuController::index()"/>
         <argument key="App\Controller\MenuController:show" type="service_closure" id=".service_locator.nhhyrwr.App\Controller\MenuController::show()"/>
@@ -6278,9 +6373,10 @@
       <argument type="service" id="argument_resolver.query_parameter_value_resolver"/>
       <argument type="service" id="debug.stopwatch"/>
     </service>
-    <service id=".service_locator.uckz52C" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.kAhtWZS" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="App\Form\CommandeType" type="service_closure" id="App\Form\CommandeType"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="service_closure" id="form.type.form"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\ChoiceType" type="service_closure" id="form.type.choice"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\FileType" type="service_closure" id="form.type.file"/>
@@ -6399,6 +6495,12 @@
     <service id=".service_locator.TJNRSaV.App\Controller\AdminController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\AdminController"/>
       <argument>App\Controller\AdminController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.TJNRSaV" method="withContext"/>
+    </service>
+    <service id=".service_locator.TJNRSaV.App\Controller\CommandeController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\CommandeController"/>
+      <argument>App\Controller\CommandeController</argument>
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.TJNRSaV" method="withContext"/>
     </service>
@@ -6575,6 +6677,7 @@
         <argument type="collection">
           <argument>App\Kernel</argument>
           <argument>App\Controller\AdminController</argument>
+          <argument>App\Controller\CommandeController</argument>
           <argument>App\Controller\HomeController</argument>
           <argument>App\Controller\MenuController</argument>
           <argument>App\Controller\SecurityController</argument>
@@ -6630,6 +6733,12 @@
     </service>
     <service id=".errored..service_locator.1vYpZ1B.Symfony\Component\Config\Loader\LoaderInterface" class="Symfony\Component\Config\Loader\LoaderInterface">
       <tag name="container.error" message="Cannot autowire service &quot;.service_locator.1vYpZ1B&quot;: it needs an instance of &quot;Symfony\Component\Config\Loader\LoaderInterface&quot; but this type has been excluded from autowiring."/>
+    </service>
+    <service id=".errored..service_locator.J92g9LK.App\Entity\Commande" class="App\Entity\Commande">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.J92g9LK&quot;: it needs an instance of &quot;App\Entity\Commande&quot; but this type has been excluded because it's a Doctrine entity."/>
+    </service>
+    <service id=".errored..service_locator.0Q_nXe_.App\Entity\Commande" class="App\Entity\Commande">
+      <tag name="container.error" message="Cannot autowire service &quot;.service_locator.0Q_nXe_&quot;: it needs an instance of &quot;App\Entity\Commande&quot; but this type has been excluded because it's a Doctrine entity."/>
     </service>
     <service id=".console.command.about.lazy" class="Symfony\Component\Console\Command\LazyCommand">
       <argument>about</argument>
@@ -7600,7 +7709,7 @@
     <service id="Symfony\Component\Security\Core\User\UserCheckerInterface" alias="security.user_checker"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.ryAvHi4" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.9JWxdIs"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.3AiV1sb"/>
     <service id="twig.loader" alias="twig.loader.native_filesystem"/>
     <service id="doctrine.id_generator_locator" alias=".service_locator.W55Po6X"/>
     <service id="Psr\Log\LoggerInterface" alias="logger"/>
@@ -7617,6 +7726,11 @@
     <service id="doctrine.orm.default_metadata_driver" alias=".doctrine.orm.default_metadata_driver"/>
     <service id=".service_locator.c0wzfI4" alias=".service_locator.1vYpZ1B"/>
     <service id=".service_locator.h3XgL1o" alias=".service_locator.qCuA8sq"/>
+    <service id=".service_locator.kGHUY.A" alias=".service_locator.LRdXfs_"/>
+    <service id=".service_locator.nXROFke" alias=".service_locator.J92g9LK"/>
+    <service id=".service_locator.7mImRpD" alias=".service_locator.JColMOm"/>
+    <service id=".service_locator.exOIXhK" alias=".service_locator.0Q_nXe_"/>
+    <service id=".service_locator.3kkyGmi" alias=".service_locator.vFJD2_9"/>
     <service id=".service_locator.jBvtzft" alias=".service_locator.nhhyrwr"/>
     <service id=".service_locator.uBwBrvQ" alias=".service_locator.0MQaTBY"/>
     <service id=".service_locator.FKG6F_t" alias=".service_locator.TJNRSaV"/>

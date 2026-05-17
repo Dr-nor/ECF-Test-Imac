@@ -4,7 +4,6 @@
    Charte graphique : #1A6BAD (bleu) / #E8701A (orange)
    Police : system-ui / -apple-system (fallback Inter)
    ============================================================ */
-
 /* ---- Variables CSS ---- */
 :root {
     --primary:       #1A6BAD;
@@ -22,7 +21,6 @@
     --white:         #FFFFFF;
     --body-bg:       #FAFBFC;
     --light:         #F3F4F6;
-
     --font-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --radius-sm: 4px;
     --radius-md: 8px;
@@ -31,10 +29,8 @@
     --shadow-md: 0 4px 12px rgba(0,0,0,.10);
     --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
 }
-
 /* ---- Reset / Base ---- */
 * { box-sizing: border-box; }
-
 body {
     font-family: var(--font-base);
     background-color: var(--body-bg);
@@ -42,10 +38,8 @@ body {
     font-size: 1rem;
     line-height: 1.6;
 }
-
 a { color: var(--primary); text-decoration: none; }
 a:hover { color: var(--primary-dark); text-decoration: underline; }
-
 /* ---- Override Bootstrap couleur primaire ---- */
 .btn-primary {
     background-color: var(--primary);
@@ -65,7 +59,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     border-radius: var(--radius-md);
 }
 .btn-accent:hover { background-color: #c85e12; border-color: #c85e12; color: #fff; }
-
 .btn-outline-primary {
     border-color: var(--primary);
     color: var(--primary);
@@ -88,11 +81,9 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     background: rgba(255,255,255,.15);
     color: #fff;
 }
-
 .text-accent { color: var(--accent) !important; }
 .text-primary { color: var(--primary) !important; }
 .bg-primary-light { background-color: var(--primary-light) !important; }
-
 /* ---- NAVBAR ---- */
 .navbar-vg {
     background-color: var(--primary);
@@ -147,14 +138,12 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     transition: background .2s;
 }
 .navbar-vg .btn-commander:hover { background: #c85e12; }
-
 .navbar-toggler {
     border-color: rgba(255,255,255,.5);
 }
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
-
 /* ---- FLASH MESSAGES ---- */
 .flash-container { margin-top: .5rem; }
 .alert { border-radius: var(--radius-md); border: none; }
@@ -162,7 +151,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 .alert-danger  { background: #FEF2F2; color: var(--danger); border-left: 4px solid var(--danger); }
 .alert-warning { background: #FFFBEB; color: var(--warning); border-left: 4px solid var(--warning); }
 .alert-info    { background: var(--primary-light); color: var(--primary); border-left: 4px solid var(--primary); }
-
 /* ---- HERO (Accueil) ---- */
 .hero-section {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -226,7 +214,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     color: rgba(255,255,255,.5);
     font-size: .9rem;
 }
-
 /* ---- SECTION TITLES ---- */
 .section-title {
     font-size: 1.75rem;
@@ -236,7 +223,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 }
 .section-title .accent-word { color: var(--accent); }
 .section-subtitle { color: var(--gray); font-size: .95rem; }
-
 /* ---- CARTE MENU ---- */
 .menu-card {
     background: var(--white);
@@ -265,7 +251,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 .menu-card-image.theme-paques    { background: linear-gradient(135deg, #10B981, #047857); }
 .menu-card-image.theme-corporate { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
 .menu-card-image.theme-default   { background: linear-gradient(135deg, #E8701A, #C85E12); }
-
 .menu-card-badge {
     position: absolute;
     top: 10px; right: 10px;
@@ -289,7 +274,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     background: var(--warning);
     color: #fff;
 }
-
 .menu-card-body { padding: 1.1rem 1.2rem 1.25rem; }
 .menu-card-theme {
     font-size: .7rem;
@@ -340,7 +324,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     display: block;
     line-height: 1.1;
 }
-
 /* ---- FILTRES ---- */
 .filter-bar {
     background: var(--white);
@@ -377,14 +360,12 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     transition: all .2s;
 }
 .btn-reinitialiser:hover { border-color: var(--danger); color: var(--danger); }
-
 .results-count {
     font-size: .88rem;
     color: var(--gray);
     font-weight: 500;
 }
 .results-count strong { color: var(--dark); }
-
 /* ---- PAGE HEADER BLEU (Liste menus) ---- */
 .page-header-blue {
     background: var(--primary);
@@ -402,7 +383,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     margin: 0;
     font-size: .95rem;
 }
-
 /* ---- BREADCRUMB ---- */
 .breadcrumb-vg {
     padding: .6rem 0;
@@ -412,7 +392,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 .breadcrumb-vg .breadcrumb-item a { color: var(--primary); font-size: .88rem; }
 .breadcrumb-vg .breadcrumb-item.active { color: var(--gray); font-size: .88rem; }
 .breadcrumb-vg .breadcrumb-item + .breadcrumb-item::before { color: var(--border); }
-
 /* ---- PAGE DETAIL MENU ---- */
 .detail-image-wrap {
     border-radius: var(--radius-lg);
@@ -435,7 +414,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     color: #fff;
 }
 .detail-badge.complet { background: var(--danger); }
-
 .detail-theme-label {
     font-size: .75rem;
     font-weight: 700;
@@ -496,7 +474,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     font-weight: 700;
     margin-right: .5rem;
 }
-
 .detail-form-box {
     background: var(--white);
     border: 1px solid var(--border);
@@ -556,7 +533,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     background: var(--primary);
     color: #fff;
 }
-
 /* ---- AVIS ---- */
 .avis-global-score {
     font-size: 2.5rem;
@@ -574,7 +550,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 .avis-card-author { font-weight: 700; font-size: .9rem; color: var(--dark); }
 .avis-card-date   { font-size: .78rem; color: var(--gray); }
 .avis-card-text   { font-size: .85rem; color: var(--gray); margin-top: .4rem; line-height: 1.5; }
-
 /* ---- SECTION "VOUS AIMEREZ" ---- */
 .section-also { background: var(--light); padding: 3rem 0; }
 .also-card {
@@ -597,7 +572,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 .also-card-body { padding: .9rem 1rem 1rem; }
 .also-card-title { font-size: .95rem; font-weight: 700; color: var(--dark); margin-bottom: .3rem; }
 .also-card-price { font-size: 1.05rem; font-weight: 800; color: var(--accent); margin-bottom: .6rem; }
-
 /* ---- SECTION "POURQUOI NOUS" (Accueil) ---- */
 .why-section { background: var(--primary-light); padding: 4rem 0; }
 .why-icon-wrap {
@@ -613,7 +587,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 }
 .why-title { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: .4rem; }
 .why-desc  { font-size: .88rem; color: var(--gray); max-width: 220px; margin: 0 auto; }
-
 /* ---- SPINNER AJAX ---- */
 #loading-spinner {
     display: none;
@@ -622,7 +595,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     color: var(--gray);
 }
 .spinner-border-vg { color: var(--primary); }
-
 /* ---- PAGINATION ---- */
 .pagination .page-link {
     color: var(--primary);
@@ -639,7 +611,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     background-color: var(--primary-light);
     color: var(--primary);
 }
-
 /* ---- FOOTER ---- */
 .footer-vg {
     background: #1a1a2e;
@@ -688,7 +659,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
 .footer-vg .footer-bottom a:hover { color: #fff; }
 .footer-vg .footer-contact a { color: var(--accent); }
 .footer-vg .horaire-ferme { color: var(--danger); font-weight: 600; }
-
 /* ---- RESPONSIVE TWEAKS ---- */
 @media (max-width: 768px) {
     .hero-section { padding: 3rem 0 2.5rem; }
@@ -708,3 +678,6 @@ a:hover { color: var(--primary-dark); text-decoration: underline; }
     .navbar-vg .btn-connexion { display: none; }
     .hero-title { font-size: 1.6rem; }
 }
+
+/* Fix hauteur pages courtes */
+.container.py-5 { min-height: calc(100vh - 300px); }

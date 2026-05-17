@@ -35,6 +35,14 @@ class Commande
     #[ORM\Column(length: 20)]
     private ?string $statut = null;
 
+    #[ORM\ManyToOne(targetEntity: Menu::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Menu $menu = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -48,7 +56,6 @@ class Commande
     public function setNumeroCommande(string $numeroCommande): static
     {
         $this->numeroCommande = $numeroCommande;
-
         return $this;
     }
 
@@ -60,7 +67,6 @@ class Commande
     public function setDateCommande(\DateTime $dateCommande): static
     {
         $this->dateCommande = $dateCommande;
-
         return $this;
     }
 
@@ -72,7 +78,6 @@ class Commande
     public function setDatePrestation(\DateTime $datePrestation): static
     {
         $this->datePrestation = $datePrestation;
-
         return $this;
     }
 
@@ -84,7 +89,6 @@ class Commande
     public function setAdresseLivraison(string $adresseLivraison): static
     {
         $this->adresseLivraison = $adresseLivraison;
-
         return $this;
     }
 
@@ -96,7 +100,6 @@ class Commande
     public function setNombrePersonnes(int $nombrePersonnes): static
     {
         $this->nombrePersonnes = $nombrePersonnes;
-
         return $this;
     }
 
@@ -108,7 +111,6 @@ class Commande
     public function setPrixTotal(string $prixTotal): static
     {
         $this->prixTotal = $prixTotal;
-
         return $this;
     }
 
@@ -120,7 +122,28 @@ class Commande
     public function setStatut(string $statut): static
     {
         $this->statut = $statut;
+        return $this;
+    }
 
+    public function getMenu(): ?Menu
+    {
+        return $this->menu;
+    }
+
+    public function setMenu(?Menu $menu): static
+    {
+        $this->menu = $menu;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
         return $this;
     }
 }

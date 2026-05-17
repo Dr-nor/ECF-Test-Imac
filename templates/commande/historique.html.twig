@@ -1,0 +1,102 @@
+{# templates/commande/historique.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes — Vite & Gourmand{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">
+                <i class="bi bi-list-ul text-primary me-2"></i>Mes commandes
+            </h1>
+            <p class="text-muted mb-0">
+                Bonjour <strong>{{ app.user.prenom }}</strong> —
+                {{ commandes|length }} commande{% if commandes|length > 1 %}s{% endif %}
+            </p>
+        </div>
+        <a href="{{ path('menu_index') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Nouvelle commande
+        </a>
+    </div>
+
+    {% if commandes is empty %}
+        <div class="text-center py-5">
+            <i class="bi bi-cart-x text-muted" style="font-size:4rem;"></i>
+            <p class="text-muted mt-3 fs-5">Vous n'avez pas encore passé de commande.</p>
+            <a href="{{ path('menu_index') }}" class="btn btn-primary mt-2">
+                <i class="bi bi-grid me-2"></i>Découvrir nos menus
+            </a>
+        </div>
+
+    {% else %}
+        <div class="row g-4">
+            {% for commande in commandes %}
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center g-3">
+
+                            <div class="col-12 col-md-3">
+                                <div class="fw-bold text-primary">{{ commande.numeroCommande }}</div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    {{ commande.dateCommande|date('d/m/Y') }}
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-3">
+                                <div class="fw-semibold">{{ commande.menu.titre }}</div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-people me-1"></i>{{ commande.nombrePersonnes }} personnes
+                                </div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    Prestation : {{ commande.datePrestation|date('d/m/Y') }}
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-3">
+                                <div class="fw-bold fs-5 text-primary">
+                                    {{ commande.prixTotal|number_format(2, ',', ' ') }} €
+                                </div>
+                                {% if commande.nombrePersonnes >= 5 %}
+                                <span class="badge bg-success">
+                                    <i class="bi bi-tag me-1"></i>-10% appliqué
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12 col-md-3 text-md-end">
+                                {% set statut = commande.statut %}
+                                {% if statut == 'en_attente' %}
+                                    <span class="badge bg-warning text-dark fs-6">
+                                        <i class="bi bi-hourglass me-1"></i>En attente
+                                    </span>
+                                {% elseif statut == 'confirmée' %}
+                                    <span class="badge bg-primary fs-6">
+                                        <i class="bi bi-check-circle me-1"></i>Confirmée
+                                    </span>
+                                {% elseif statut == 'livrée' %}
+                                    <span class="badge bg-success fs-6">
+                                        <i class="bi bi-truck me-1"></i>Livrée
+                                    </span>
+                                {% elseif statut == 'annulée' %}
+                                    <span class="badge bg-danger fs-6">
+                                        <i class="bi bi-x-circle me-1"></i>Annulée
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
+</div>
+{% endblock %}

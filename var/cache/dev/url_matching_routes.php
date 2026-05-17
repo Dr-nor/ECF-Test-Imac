@@ -16,6 +16,9 @@ return [
         '/_profiler/xdebug' => [[['_route' => '_profiler_xdebug', '_controller' => 'web_profiler.controller.profiler::xdebugAction'], null, null, null, false, false, null]],
         '/_profiler/open' => [[['_route' => '_profiler_open_file', '_controller' => 'web_profiler.controller.profiler::openAction'], null, null, null, false, false, null]],
         '/admin' => [[['_route' => 'admin_dashboard', '_controller' => 'App\\Controller\\AdminController::dashboard'], null, null, null, false, false, null]],
+        '/admin/commandes' => [[['_route' => 'admin_commandes', '_controller' => 'App\\Controller\\AdminController::commandes'], null, null, null, false, false, null]],
+        '/commande/create' => [[['_route' => 'cmd_create', '_controller' => 'App\\Controller\\CommandeController::create'], null, ['GET' => 0, 'POST' => 1], null, false, false, null]],
+        '/commande/historique' => [[['_route' => 'cmd_history', '_controller' => 'App\\Controller\\CommandeController::historique'], null, ['GET' => 0], null, false, false, null]],
         '/' => [[['_route' => 'app_', '_controller' => 'App\\Controller\\HomeController::index'], null, null, null, false, false, null]],
         '/menus' => [[['_route' => 'menu_index', '_controller' => 'App\\Controller\\MenuController::index'], null, null, null, false, false, null]],
         '/menus/api/menus' => [[['_route' => 'menu_api_menus', '_controller' => 'App\\Controller\\MenuController::filterMenus'], null, null, null, false, false, null]],
@@ -42,7 +45,9 @@ return [
                         .')'
                     .')'
                 .')'
-                .'|/menus/(\\d+)(*:214)'
+                .'|/admin/commandes/([^/]++)/statut(*:234)'
+                .'|/commande/confirm/([^/]++)(*:268)'
+                .'|/menus/(\\d+)(*:288)'
             .')/?$}sDu',
     ],
     [ // $dynamicRoutes
@@ -54,7 +59,9 @@ return [
         168 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
         181 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
         191 => [[['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null]],
-        214 => [
+        234 => [[['_route' => 'admin_commande_statut', '_controller' => 'App\\Controller\\AdminController::changerStatut'], ['id'], ['POST' => 0], null, false, false, null]],
+        268 => [[['_route' => 'cmd_confirm', '_controller' => 'App\\Controller\\CommandeController::confirm'], ['id'], ['GET' => 0], null, false, true, null]],
+        288 => [
             [['_route' => 'menu_show', '_controller' => 'App\\Controller\\MenuController::show'], ['id'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

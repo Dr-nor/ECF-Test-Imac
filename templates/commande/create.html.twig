@@ -1,0 +1,137 @@
+{# templates/commande/create.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Commander — {{ menu.titre }} — Vite & Gourmand{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_') }}">Accueil</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('menu_index') }}">Nos menus</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('menu_show', {id: menu.id}) }}">{{ menu.titre }}</a></li>
+                    <li class="breadcrumb-item active">Commander</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                        <i class="bi bi-egg-fried fs-2 text-primary"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">{{ menu.titre }}</h5>
+                        <span class="badge bg-primary me-1">{{ menu.theme }}</span>
+                        <span class="badge bg-success">{{ menu.regime }}</span>
+                        <div class="mt-1 fw-bold text-primary fs-5">
+                            {{ menu.prix|number_format(2, ',', ' ') }} € / personne
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-cart-plus me-2"></i>Votre commande</h4>
+                </div>
+                <div class="card-body p-4">
+
+                    {{ form_start(form) }}
+
+                    <div class="mb-4">
+                        {{ form_label(form.nombrePersonnes, null, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.nombrePersonnes) }}
+                        <div class="form-text">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Minimum {{ menu.nombrePersonneMinimum }} personnes pour ce menu.
+                            <span class="text-success fw-semibold">Réduction -10% dès 5 personnes !</span>
+                        </div>
+                        {{ form_errors(form.nombrePersonnes) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.datePrestation, null, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.datePrestation) }}
+                        <div class="form-text">
+                            <i class="bi bi-calendar-event me-1"></i>La date doit être dans le futur.
+                        </div>
+                        {{ form_errors(form.datePrestation) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.adresseLivraison, null, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                        {{ form_widget(form.adresseLivraison) }}
+                        {{ form_errors(form.adresseLivraison) }}
+                    </div>
+
+                    <div class="alert alert-light border" id="recap-prix">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>Prix unitaire :</span>
+                            <span class="fw-semibold">{{ menu.prix|number_format(2, ',', ' ') }} €</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span>Nombre de personnes :</span>
+                            <span id="affiche-personnes" class="fw-semibold">—</span>
+                        </div>
+                        <div id="ligne-reduction" class="d-flex justify-content-between align-items-center mt-1 text-success d-none">
+                            <span><i class="bi bi-tag me-1"></i>Réduction -10% <span class="badge bg-success">≥ 5 pers.</span></span>
+                            <span id="affiche-reduction" class="fw-semibold"></span>
+                        </div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between align-items-center fs-5">
+                            <span class="fw-bold">Total estimé :</span>
+                            <span id="affiche-total" class="fw-bold text-primary">—</span>
+                        </div>
+                    </div>
+
+                    {{ form_widget(form.submit) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    const prixUnitaire   = {{ menu.prix }};
+    const inputPersonnes = document.querySelector('input[name="commande[nombrePersonnes]"]');
+    const affPersonnes   = document.getElementById('affiche-personnes');
+    const affTotal       = document.getElementById('affiche-total');
+    const affReduction   = document.getElementById('affiche-reduction');
+    const ligneReduction = document.getElementById('ligne-reduction');
+
+    function calculerPrix() {
+        const nb = parseInt(inputPersonnes.value) || 0;
+        if (nb <= 0) {
+            affPersonnes.textContent = '—';
+            affTotal.textContent     = '—';
+            ligneReduction.classList.add('d-none');
+            return;
+        }
+        let base  = prixUnitaire * nb;
+        let total = base;
+        affPersonnes.textContent = nb + ' pers.';
+        if (nb >= 5) {
+            const montantReduc = base * 0.10;
+            total = base * 0.90;
+            affReduction.textContent = '- ' + montantReduc.toFixed(2).replace('.', ',') + ' €';
+            ligneReduction.classList.remove('d-none');
+        } else {
+            ligneReduction.classList.add('d-none');
+        }
+        affTotal.textContent = total.toFixed(2).replace('.', ',') + ' €';
+    }
+
+    if (inputPersonnes) {
+        inputPersonnes.addEventListener('input', calculerPrix);
+        calculerPrix();
+    }
+    </script>
+{% endblock %}
